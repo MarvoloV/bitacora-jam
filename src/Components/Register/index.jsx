@@ -20,7 +20,6 @@ import {
   InputRightElement,
   Image,
   Center,
-  Text,
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { BsFacebook } from 'react-icons/bs';
@@ -78,33 +77,6 @@ const Register = () => {
             justifyContent="center"
             borderRadius={20}
           >
-            <Center>
-              <Button
-                borderRadius={20}
-                type="submit"
-                variant="solid"
-                colorScheme="facebook"
-                width="35vh"
-                leftIcon={<BsFacebook />}
-              >
-                Registrese con Facebook
-              </Button>
-            </Center>
-            <Center>
-              <Button
-                borderRadius={20}
-                type="submit"
-                variant="solid"
-                colorScheme="teal"
-                width="35vh"
-                leftIcon={<FcGoogle />}
-              >
-                Registrese con Google
-              </Button>
-            </Center>
-            <Center>
-              <Text>o</Text>
-            </Center>
             <form onSubmit={handleSubmit(onSubmit)}>
               <FormControl>
                 <Center>
@@ -200,6 +172,33 @@ const Register = () => {
             {' Inicia sesión'}
           </Link>
         </Box>
+        <Stack direction="row">
+          <Center>
+            <Button
+              borderRadius={20}
+              type="submit"
+              variant="solid"
+              colorScheme="facebook"
+              width="35vh"
+              leftIcon={<BsFacebook />}
+              margin={(0, 5)}
+            >
+              Registrese con Facebook
+            </Button>
+          </Center>
+          <Center>
+            <Button
+              borderRadius={20}
+              type="submit"
+              variant="solid"
+              colorScheme="teal"
+              width="35vh"
+              leftIcon={<FcGoogle />}
+            >
+              Registrese con Google
+            </Button>
+          </Center>
+        </Stack>
       </Stack>
     </Flex>
   );
