@@ -52,8 +52,6 @@ const Login = () => {
       width="100wh"
       height="100vh"
       backgroundColor="gray.200"
-
-      // alignItems="center"
     >
       <Stack direction="row">
         <Image
