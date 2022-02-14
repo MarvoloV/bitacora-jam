@@ -35,8 +35,9 @@ import {
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import ButtonDark from '../ButtonDark';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome },
@@ -95,48 +96,52 @@ const SidebarContent = ({ onClose, ...rest }) => (
       <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
     </Flex>
     {LinkItems.map((link) => (
-      <NavItem key={link.name} icon={link.icon}>
+      <NavItem key={link.name} icon={link.icon} name={link.name}>
         {link.name}
       </NavItem>
     ))}
   </Box>
 );
 
-const NavItem = ({ icon, children, ...rest }) => (
-  <Link
-    href="/"
-    style={{ textDecoration: 'none' }}
-    _focus={{ boxShadow: 'none' }}
-  >
-    <Flex
-      align="center"
-      p="4"
-      mx="4"
-      borderRadius="lg"
-      role="group"
-      cursor="pointer"
-      _hover={{
-        bg: 'cyan.400',
-        color: 'white',
-      }}
-      {...rest}
+const NavItem = ({ icon, name, children, ...rest }) => {
+  const url = `/pages/${name}`;
+  return (
+    <Link
+      as={RouterLink}
+      to={url}
+      style={{ textDecoration: 'none' }}
+      _focus={{ boxShadow: 'none' }}
     >
-      {icon && (
-        <Icon
-          mr="4"
-          fontSize="16"
-          _groupHover={{
-            color: 'white',
-          }}
-          as={icon}
-        />
-      )}
-      {children}
-    </Flex>
-  </Link>
-);
+      <Flex
+        align="center"
+        p="4"
+        mx="4"
+        borderRadius="lg"
+        role="group"
+        cursor="pointer"
+        _hover={{
+          bg: 'cyan.400',
+          color: 'white',
+        }}
+        {...rest}
+      >
+        {icon && (
+          <Icon
+            mr="4"
+            fontSize="16"
+            _groupHover={{
+              color: 'white',
+            }}
+            as={icon}
+          />
+        )}
+        {children}
+      </Flex>
+    </Link>
+  );
+};
+
 const MobileNav = ({ onOpen, ...rest }) => {
-  const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
   return (
     <Flex
@@ -168,12 +173,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       </Text>
 
       <HStack spacing={{ base: '0', md: '6' }}>
-        <Button
-          onClick={toggleColorMode}
-          bg={colorMode === 'light' ? 'white' : 'gray.900'}
-        >
-          {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-        </Button>
+        <ButtonDark />
         <IconButton
           size="lg"
           variant="ghost"

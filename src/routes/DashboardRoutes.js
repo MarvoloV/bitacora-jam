@@ -6,7 +6,7 @@ import ProfilePage from '../Pages/ProfilePage/index';
 const DashboardRoutes = () => (
   <div>
     <Routes>
-      <Route path="dashboard" element={<DashboardPage />} />
+      <Route path="home" element={<DashboardPage />} />
       <Route path="profile" element={<ProfilePage />} />
       {/* <Route path="marvel" element={<MarvelScreen />} />
         <Route path="dc" element={<DcScreen />} />

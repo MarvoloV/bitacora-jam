@@ -68,7 +68,6 @@ const Profile = () => {
         </Center>
 
         <Center
-          bg="gray.400"
           width={{
             base: '100%', // 0-48em
             md: '100%', // 48em-80em,
@@ -93,7 +92,7 @@ const Profile = () => {
                 type="email"
                 id="email"
                 isDisabled
-                color="blue"
+                color="red"
                 fontWeight="black"
               />
             </FormControl>
@@ -108,7 +107,7 @@ const Profile = () => {
                 id="userName"
                 value="Marvolov"
                 isDisabled
-                color="blue"
+                color="red"
                 fontWeight="black"
               />
             </FormControl>
@@ -146,7 +145,7 @@ const Profile = () => {
               variant="solid"
               colorScheme="whatsapp"
               width="full"
-              mt={3}
+              mt={7}
             >
               Actualizar datos
             </Button>
