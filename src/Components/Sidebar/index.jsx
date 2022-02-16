@@ -28,21 +28,20 @@ import {
 import {
   FiHome,
   FiTrendingUp,
-  FiCompass,
+  FiBarChart2,
   FiStar,
   FiSettings,
   FiMenu,
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi';
-
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import ButtonDark from '../ButtonDark';
 
 const LinkItems = [
-  { name: 'Home', icon: FiHome },
-  { name: 'Trending', icon: FiTrendingUp },
-  { name: 'Explore', icon: FiCompass },
+  { name: 'Home', source: 'home', icon: FiHome },
+  { name: 'Operaciones', source: 'operations', icon: FiTrendingUp },
+  { name: 'Reportes', source: 'reports', icon: FiBarChart2 },
   { name: 'Favourites', icon: FiStar },
   { name: 'Settings', icon: FiSettings },
 ];
@@ -96,15 +95,15 @@ const SidebarContent = ({ onClose, ...rest }) => (
       <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
     </Flex>
     {LinkItems.map((link) => (
-      <NavItem key={link.name} icon={link.icon} name={link.name}>
+      <NavItem key={link.name} icon={link.icon} source={link.source}>
         {link.name}
       </NavItem>
     ))}
   </Box>
 );
 
-const NavItem = ({ icon, name, children, ...rest }) => {
-  const url = `/pages/${name}`;
+const NavItem = ({ icon, source, children, ...rest }) => {
+  const url = `/pages/${source}`;
   return (
     <Link
       as={RouterLink}

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Flex,
   Heading,
@@ -45,7 +45,11 @@ const Login = () => {
     resolver: yupResolver(LoginSchema),
   });
   const handleShowClick = () => setShowPassword(!showPassword);
-  const onSubmit = (data) => console.log(data);
+  const navigate = useNavigate();
+  const onSubmit = (data) => {
+    console.log(data);
+    navigate('pages/home');
+  };
   return (
     <Flex
       flexDirection="row"

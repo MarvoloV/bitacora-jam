@@ -8,50 +8,41 @@ import {
   StatNumber,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { BsPerson } from 'react-icons/bs';
-import { FiServer } from 'react-icons/fi';
-import { GoLocation } from 'react-icons/go';
 import PropTypes from 'prop-types';
 
-const StatsCard = ({ title, stat, icon }) => (
+const StatsCard = ({ title, stat, color }) => (
   <Stat
     px={{ base: 2, md: 4 }}
-    py="5"
-    shadow="xl"
+    py="2"
+    /* shadow="xl" */
     border="1px solid"
-    borderColor={useColorModeValue('gray.800', 'gray.500')}
+    borderColor={useColorModeValue('gray.800', 'gray.800')}
     rounded="lg"
+    bg={color}
   >
-    <Flex justifyContent="space-between">
-      <Box pl={{ base: 2, md: 4 }}>
-        <StatLabel fontWeight="medium" isTruncated>
+    <Flex justifyContent="center">
+      <Box>
+        <StatLabel isTruncated fontSize="xl">
           {title}
         </StatLabel>
-        <StatNumber fontSize="2xl" fontWeight="medium">
+        <StatNumber fontSize="5xl" fontWeight="medium" textAlign="center">
           {stat}
         </StatNumber>
-      </Box>
-      <Box
-        my="auto"
-        color={useColorModeValue('gray.800', 'gray.200')}
-        alignContent="center"
-      >
-        {icon}
       </Box>
     </Flex>
   </Stat>
 );
 
 const BasicStatistics = () => (
-  <Box maxW="7xl" mx="auto" pt={5} px={{ base: 2, sm: 12, md: 17 }}>
-    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
-      <StatsCard title="Cuentas" stat="2" icon={<BsPerson size="3em" />} />
-      <StatsCard title="Servers" stat="1,000" icon={<FiServer size="3em" />} />
-      <StatsCard
-        title="Datacenters"
-        stat="7"
-        icon={<GoLocation size="3em" />}
-      />
+  <Box maxW="5xl" mx="auto" pt={5} px={{ base: 2, sm: 12, md: 17 }}>
+    <SimpleGrid
+      columns={{ sm: 1, base: 2, md: 2, lg: 2, xl: 4 }}
+      spacing={{ base: 5, lg: 8 }}
+    >
+      <StatsCard title="TOTAL" stat="50" color="purple.500" />
+      <StatsCard title="TAKE PROFIT" stat="10" color="teal.400" />
+      <StatsCard title="STOP LOSS" stat="33" color="red" />
+      <StatsCard title="BREAK EVEN" stat="7" color="yellow.500" />
     </SimpleGrid>
   </Box>
 );

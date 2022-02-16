@@ -1,19 +1,17 @@
 import React from 'react';
 import { Center } from '@chakra-ui/react';
 import Sidebar from '../../Components/Sidebar';
-import BasicStatistics from '../../Components/Stadistics';
-import CardAcount from '../../Components/CardAcount/Index';
-import AddAcount from '../../Components/AddAcount/index';
+import CardAccount from '../../Components/CardAccount';
+import ButtonAddAcount from '../../Components/ButtonAddAcount';
 
 const DashboardPage = () => (
   <Sidebar>
-    <BasicStatistics />
-    <Center display="flex" pt={5}>
-      <CardAcount />
-      <CardAcount />
+    <Center display="flex" pt={5} flexWrap="wrap">
+      <CardAccount />
+      <CardAccount />
     </Center>
     <Center>
-      <AddAcount />
+      <ButtonAddAcount />
     </Center>
   </Sidebar>
 );
