@@ -6,6 +6,7 @@ import NotFound from '../Pages/Error404';
 import OperationsPage from '../Pages/OperationsPage';
 import ProfilePage from '../Pages/ProfilePage/index';
 import ReportAccount from '../Pages/ReportAccount';
+import CalculatorPage from '../Pages/CalculatorPage/index';
 
 const DashboardRoutes = () => (
   <div>
@@ -16,6 +17,7 @@ const DashboardRoutes = () => (
       <Route path="reportaccount/:id" element={<ReportAccount />} />
       <Route path="operations" element={<OperationsPage />} />
       <Route path="createOperation" element={<CreateOperationPage />} />
+      <Route path="calculator" element={<CalculatorPage />} />
       {/* <Route path="marvel" element={<MarvelScreen />} />
         <Route path="dc" element={<DcScreen />} />
         <Route path="search" element={<SearchScreen />} />

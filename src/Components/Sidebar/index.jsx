@@ -34,15 +34,16 @@ import {
   FiMenu,
   FiBell,
   FiChevronDown,
+  FiActivity,
 } from 'react-icons/fi';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import ButtonDark from '../ButtonDark';
 
 const LinkItems = [
   { name: 'Home', source: 'home', icon: FiHome },
+  { name: 'Calculadora', source: 'calculator', icon: FiActivity },
   { name: 'Operaciones', source: 'operations', icon: FiTrendingUp },
   { name: 'Reportes', source: 'reports', icon: FiBarChart2 },
-  { name: 'Favourites', icon: FiStar },
   { name: 'Settings', icon: FiSettings },
 ];
 
@@ -50,7 +51,7 @@ const SidebarWithHeader = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Box minH="100vh" bg={useColorModeValue('gray.200', 'gray.900')}>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}

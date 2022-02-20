@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import {
   Box,
   Center,
@@ -11,11 +12,12 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const CardAccount = () => {
+const CardAccount = ({ accountName, accountAmount, accountType, id }) => {
   const navigate = useNavigate();
   const handlerAccount = () => {
-    navigate('/pages/reportaccount/123123');
+    navigate(`/pages/reportaccount/${id}`);
   };
   return (
     <Center py={6} width="400px">
@@ -34,10 +36,13 @@ const CardAccount = () => {
           align="center"
         >
           <Stack direction="row" align="center" justify="center">
-            <Text fontSize="3xl">ID:</Text>
             <Text fontSize="3xl" fontWeight={800}>
-              101541845
+              {accountName}
             </Text>
+            {/* <Text fontSize="3xl">ID:</Text> */}
+            {/* <Text fontSize="3xl" fontWeight={800}>
+              101541845
+            </Text> */}
           </Stack>
           <Stack direction="row" align="center" justify="center">
             <Text fontSize="xl">BROKER:</Text>
@@ -50,20 +55,12 @@ const CardAccount = () => {
         <Box bg={useColorModeValue('gray.50', 'gray.900')} px={6} py={10}>
           <List spacing={3}>
             <ListItem>
-              <ListIcon as={CheckIcon} color="teal.400" />
-              5.000 page views
+              <ListIcon as={CheckIcon} color="teal.400" />$ {accountAmount}{' '}
+              dolares
             </ListItem>
             <ListItem>
               <ListIcon as={CheckIcon} color="teal.400" />
-              50 automation executions
-            </ListItem>
-            <ListItem>
-              <ListIcon as={CheckIcon} color="teal.400" />
-              50 identified users
-            </ListItem>
-            <ListItem>
-              <ListIcon as={CheckIcon} color="teal.400" />
-              All features
+              {accountType}
             </ListItem>
           </List>
 
@@ -89,3 +86,9 @@ const CardAccount = () => {
 };
 
 export default CardAccount;
+CardAccount.propTypes = {
+  accountName: PropTypes.string.isRequired,
+  accountAmount: PropTypes.number.isRequired,
+  accountType: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+};

@@ -1,8 +1,12 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable react/no-children-prop */
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable no-underscore-dangle */
+import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-date-picker';
+import 'react-calendar/dist/Calendar.css';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
@@ -18,74 +22,185 @@ import {
   InputLeftElement,
   InputGroup,
   useColorModeValue,
-  setScript,
+  Text,
+  IconButton,
 } from '@chakra-ui/react';
+import { FaRegTimesCircle } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux';
+import jwtDecode from 'jwt-decode';
+import { fetchUser } from '../../store/actions/userActionsCreator';
 
 const SignupSchema = yup.object().shape({
-  email: yup.string().email().required('Ingrese un correo electronico'),
-  userName: yup.string().required('Ingrese un nombre de Usuario'),
+  /* account: yup.string().required('Ingrese un correo electronico'), */
+  amount: yup.string().required('Ingrese un nombre de Usuario'),
 });
-const parDivisa = [
-  'AUDCAD',
-  'AUDCHF',
-  'AUDJPY',
-  'AUDNZD',
-  'AUDUSD',
-  'CADCHF',
-  'CADJPY',
-  'CHFJPY',
-  'EURAUD',
-  'EURCAD',
-  'EURCHF',
-  'EURGBP',
-  'EURJPY',
-  'EURNZD',
-  'EURUSD',
-  'GBPAUD',
-  'GBPCAD',
-  'GBPCHF',
-  'GBPJPY',
-  'GBPNZD',
-  'GBPUSD',
-  'NZDCAD',
-  'NZDCHF',
-  'NZDJPY',
-  'NZDUSD',
-  'USDCAD',
-  'USDCHF',
-  'USDJPY',
-  'XAUUSD',
-  'XAUGUSD',
-];
-
 const AddOperation = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm({ resolver: yupResolver(SignupSchema) });
-  const [risk, setRisk] = useState('');
-  const [lottery, setLottery] = useState('');
-  const [amountData, setAmountData] = useState('');
-  const accounts = [
-    { cuenta: 'Cuenta Gama', monto: 10000 },
-    { cuenta: 'Cuenta Alfa', monto: 50000 },
+  const watchShowAmount = watch();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const token = useSelector((state) => state.auth.token);
+  const userIdFromToken = jwtDecode(token)._id || null;
+  const [cotizante, setCotizante] = useState([]);
+  const [value, onChange] = useState(new Date());
+  const [accountconfirmations, setAccountConfirmations] = useState([]);
+  const [confirmationsOperation, setConfirmationsOperation] = useState([]);
+  const accounts = user.accountId;
+  useEffect(() => {
+    dispatch(fetchUser(token, userIdFromToken));
+  }, [token]);
+  const parDivisa = [
+    {
+      base: 'AUD',
+      cotizante: ['CAD', 'CHF', 'JPY', 'NZD', 'USD'],
+    },
+    {
+      base: 'CAD',
+      cotizante: ['CHF', 'JPY'],
+    },
+    {
+      base: 'CHF',
+      cotizante: ['JPY'],
+    },
+    {
+      base: 'EUR',
+      cotizante: ['AUD', 'CAD', 'CHF', 'GBP', 'JPY', 'NZD', 'USD'],
+    },
+    {
+      base: 'GBP',
+      cotizante: ['AUD', 'CAD', 'CHF', 'JPY', 'NZD', 'USD'],
+    },
+    {
+      base: 'NZD',
+      cotizante: ['CAD', 'CHF', 'JPY', 'USD'],
+    },
+    {
+      base: 'USD',
+      cotizante: ['CAD', 'CHF', 'JPY'],
+    },
+    {
+      base: 'XAU',
+      cotizante: ['USD'],
+    },
+    {
+      base: 'XAG',
+      cotizante: ['USD'],
+    },
   ];
-  const handlerRisk = (e) => {
-    e.preventDefault();
-    const amount = parseInt(e.target.value, 10);
-    setAmountData(amount);
-    const riskData = (100 * (amount || 0)) / accounts[0].monto;
-    setRisk(riskData);
+  const PrecioCotizante = [
+    {
+      cotizante: 'CAD',
+      costo: 7.84,
+    },
+    {
+      cotizante: 'CHF',
+      costo: 10.85,
+    },
+    {
+      cotizante: 'JPY',
+      costo: 8.69,
+    },
+    {
+      cotizante: 'NZD',
+      costo: 6.7,
+    },
+    {
+      cotizante: 'USD',
+      costo: 10,
+    },
+    {
+      cotizante: 'GBP',
+      costo: 13.6,
+    },
+    {
+      cotizante: 'AUD',
+      costo: 7.18,
+    },
+  ];
+  const handlerRisk = () => {
+    const accountData = accounts.find(
+      (account) => account.accountName === watchShowAmount.account,
+    );
+    const amount = parseInt(watchShowAmount.amount || 0, 10);
+    setAccountConfirmations(accountData.confirmations);
+    const riskData = (100 * amount) / (accountData.accountAmount || 0);
+    setValue('risk', riskData);
   };
-  const handlerLottery = (e) => {
-    e.preventDefault();
-    const stopLoss = parseInt(e.target.value, 10);
-    const valuePip = (amountData || 0) / stopLoss;
-    const lotteryAux = (valuePip || 0) / 10;
-    setLottery(lotteryAux.toFixed(2));
+  const handlerLottery = () => {
+    const PriceCotice = PrecioCotizante.find(
+      (price) => price.cotizante === watchShowAmount.currencyQuote,
+    );
+    const amount = parseInt(watchShowAmount.amount || 0, 10);
+    const SL = parseInt(watchShowAmount.stopLoss, 10) || 0;
+    if (SL) {
+      const valuePip = amount / SL;
+      const lotteryAux = valuePip / PriceCotice.costo || 0;
+
+      setValue('lottery', lotteryAux.toFixed(2));
+    } else {
+      setValue('lottery', 0);
+    }
   };
-  const onSubmit = (data) => console.log(data);
+  const handleBase = () => {
+    const Cotize = parDivisa.find(
+      (divisa) => divisa.base === watchShowAmount.currencyBase,
+    );
+    setCotizante(Cotize?.cotizante);
+  };
+  const handlerConfirmation = () => {
+    const repeat = confirmationsOperation.find(
+      (confirmation) => confirmation === watchShowAmount.confirmations,
+    );
+    if (!repeat) {
+      const addConfirmation = accountconfirmations.find(
+        (confirmation) => confirmation === watchShowAmount.confirmations,
+      );
+      if (addConfirmation) {
+        setConfirmationsOperation([...confirmationsOperation, addConfirmation]);
+      }
+    }
+  };
+  const handlerDeleteConfirmation = (confirmationCompare) => {
+    const updateConfirmations = confirmationsOperation.filter(
+      (confirmation) => confirmation !== confirmationCompare,
+    );
+    setConfirmationsOperation(updateConfirmations);
+  };
+  const onSubmit = (data) => {
+    try {
+      console.log(data, value, confirmationsOperation);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if (watchShowAmount.account) {
+      handlerRisk();
+      handleBase();
+      handlerLottery();
+    }
+  }, [
+    watchShowAmount.account,
+    watchShowAmount.amount,
+    watchShowAmount.currencyBase,
+    watchShowAmount.currencyQuote,
+    watchShowAmount.stopLoss,
+  ]);
+  useEffect(() => {
+    if (watchShowAmount.account) {
+      handlerConfirmation();
+    }
+  }, [watchShowAmount.confirmations]);
+
+  //  console.log('🚀 ~ file: index.jsx ~ line 170 ~ AddOperation ~ value', value);
+  // const dateFormat = value.toLocaleDateString();
+
   return (
     <Flex flexDirection="row">
       <Stack
@@ -97,13 +212,31 @@ const AddOperation = () => {
         <Box minW={{ base: '90%', md: '468px' }}>
           <Stack
             p="1rem"
-            bg={useColorModeValue('gray.300', 'gray.800')}
+            bg={useColorModeValue('white', 'gray.800')}
             boxShadow="md"
             justifyContent="center"
             borderRadius={20}
             mb={10}
           >
             <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl mt={2}>
+                <Center>
+                  <FormLabel
+                    htmlFor="currencyBase"
+                    fontSize={20}
+                    fontWeight="bold"
+                  >
+                    Fecha y hora
+                  </FormLabel>
+                </Center>
+                <Center flexDirection="row" justifyContent="space-around">
+                  <DatePicker
+                    onChange={onChange}
+                    value={value}
+                    format="dd-MM-y"
+                  />
+                </Center>
+              </FormControl>
               <FormControl mt={2}>
                 <Center>
                   <FormLabel htmlFor="account" fontSize={20} fontWeight="bold">
@@ -116,9 +249,9 @@ const AddOperation = () => {
                   {...register('account', { required: true })}
                   border="2px solid"
                 >
-                  {accounts.map((account) => (
-                    <option key={account.cuenta} value={account.cuenta}>
-                      {account.cuenta}
+                  {accounts?.map((account) => (
+                    <option key={account._id} value={account.accountName}>
+                      {account.accountName}
                     </option>
                   ))}
                 </Select>
@@ -126,25 +259,41 @@ const AddOperation = () => {
               <FormControl mt={2}>
                 <Center>
                   <FormLabel
-                    htmlFor="typeAccount"
+                    htmlFor="currencyBase"
                     fontSize={20}
                     fontWeight="bold"
                   >
                     Par de divisas
                   </FormLabel>
                 </Center>
-                <Select
-                  id="currencyPair"
-                  placeholder="Seleccionar Par"
-                  {...register('currencyPair', { required: true })}
-                  border="2px solid"
-                >
-                  {parDivisa.map((divisa) => (
-                    <option key={divisa} value={divisa}>
-                      {divisa}
-                    </option>
-                  ))}
-                </Select>
+                <Center flexDirection="row" justifyContent="space-around">
+                  <Select
+                    id="currencyBase"
+                    placeholder="Seleccionar Par"
+                    {...register('currencyBase', { required: true })}
+                    border="2px solid"
+                    width="40%"
+                  >
+                    {parDivisa.map((divisa) => (
+                      <option key={divisa.base} value={divisa.base}>
+                        {divisa.base}
+                      </option>
+                    ))}
+                  </Select>
+                  <Select
+                    id="currencyQuote"
+                    placeholder="Seleccionar Par"
+                    {...register('currencyQuote', { required: true })}
+                    border="2px solid"
+                    width="40%"
+                  >
+                    {cotizante?.map((divisa) => (
+                      <option key={divisa} value={divisa}>
+                        {divisa}
+                      </option>
+                    ))}
+                  </Select>
+                </Center>
               </FormControl>
               <FormControl mt={2}>
                 <Center>
@@ -159,14 +308,8 @@ const AddOperation = () => {
                     fontSize="1.2em"
                     children="$"
                   />
-                  <Input
-                    type="number"
-                    id="amount"
-                    {...register('amount')}
-                    onChange={handlerRisk}
-                  />
+                  <Input type="number" id="amount" {...register('amount')} />
                 </InputGroup>
-
                 {errors.amount && <p>{errors.amount.message}</p>}
               </FormControl>
               <FormControl mt={2}>
@@ -180,10 +323,71 @@ const AddOperation = () => {
                     type="number"
                     id="stopLoss"
                     {...register('stopLoss')}
-                    onChange={handlerLottery}
                   />
                 </InputGroup>
-                {errors.amount && <p>{errors.amount.message}</p>}
+                {/* {errors.amount && <p>{errors.amount.message}</p>} */}
+              </FormControl>
+              <FormControl mt={2}>
+                <Center>
+                  <FormLabel
+                    htmlFor="confirmations"
+                    fontSize={20}
+                    fontWeight="bold"
+                  >
+                    Elegir confirmaciones
+                  </FormLabel>
+                </Center>
+                <Select
+                  id="confirmations"
+                  placeholder="Seleccionar Cuenta"
+                  {...register('confirmations', { required: true })}
+                  border="2px solid"
+                >
+                  {accountconfirmations?.map((confirmation) => (
+                    <option key={confirmation} value={confirmation}>
+                      {confirmation}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+              <Box
+                alignItems="center"
+                display="flex"
+                flexDirection="column"
+                mt={5}
+              >
+                {confirmationsOperation.map((confirmation) => (
+                  <Box
+                    key={confirmation}
+                    my={2}
+                    fontSize="25px"
+                    display="flex"
+                    justifyContent="space-between"
+                    width={300}
+                  >
+                    <Text mr={5}>{confirmation}</Text>
+                    <IconButton
+                      colorScheme="teal"
+                      variant="outline"
+                      /* bg={useColorModeValue('gray.300', 'gray.800')} */
+                      icon={<FaRegTimesCircle />}
+                      type="button"
+                      onClick={() => handlerDeleteConfirmation(confirmation)}
+                    />
+                  </Box>
+                ))}
+              </Box>
+              <FormControl mt={2}>
+                <Center>
+                  <FormLabel
+                    htmlFor="linkEntry"
+                    fontSize={20}
+                    fontWeight="bold"
+                  >
+                    Link Entrada tradingView
+                  </FormLabel>
+                </Center>
+                <Input type="url" id="linkEntry" {...register('linkEntry')} />
               </FormControl>
               <FormControl>
                 <Center>
@@ -198,7 +402,6 @@ const AddOperation = () => {
                     children="%"
                   />
                   <Input
-                    value={risk}
                     type="number"
                     id="risk"
                     {...register('risk')}
@@ -213,28 +416,18 @@ const AddOperation = () => {
                   </FormLabel>
                 </Center>
                 <Input
-                  value={lottery}
                   type="number"
                   id="lottery"
                   {...register('lottery')}
                   isReadOnly
                 />
               </FormControl>
-              <Center justifyContent="space-around">
+              <Center>
                 <Button
                   borderRadius={20}
                   type="submit"
                   variant="solid"
-                  bg="teal"
-                  mt={5}
-                >
-                  Calcular
-                </Button>
-                <Button
-                  borderRadius={20}
-                  type="submit"
-                  variant="solid"
-                  bg="green"
+                  colorScheme="teal"
                   mt={5}
                 >
                   Registrar operacion
@@ -247,5 +440,4 @@ const AddOperation = () => {
     </Flex>
   );
 };
-
 export default AddOperation;

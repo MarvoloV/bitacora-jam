@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-children-prop */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -27,6 +28,7 @@ import {
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { BsFacebook } from 'react-icons/bs';
+import { fetchLogin } from '../../store/actions/authActionsCreator';
 import imageLogin from '../../assets/login.jpg';
 
 const CFaUserAlt = chakra(FaUserAlt);
@@ -36,7 +38,11 @@ const LoginSchema = yup.object().shape({
   password: yup.string().required('Ingrese su  contraseña'),
 });
 const Login = () => {
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
+
   const [showPassword, setShowPassword] = useState(false);
+  // const [isLogin, setIsLogin] = useState(false);
   const {
     register,
     handleSubmit,
@@ -46,10 +52,18 @@ const Login = () => {
   });
   const handleShowClick = () => setShowPassword(!showPassword);
   const navigate = useNavigate();
-  const onSubmit = (data) => {
-    console.log(data);
-    navigate('pages/home');
+  const onSubmit = ({ email, password }) => {
+    dispatch(fetchLogin(email, password));
   };
+  useEffect(() => {
+    if (token) {
+      // setErrors({ error: '' });
+      localStorage.setItem('token', JSON.stringify(token));
+      navigate('/pages/home', { replace: true });
+    } else {
+      // setErrors({ ...errors, error: 'Email or password are wrong' });
+    }
+  }, [token]);
   return (
     <Flex
       flexDirection="row"
@@ -109,6 +123,7 @@ const Login = () => {
                   />
                   <Input
                     type={showPassword ? 'text' : 'password'}
+                    autoComplete="on"
                     placeholder="Contraseña"
                     {...register('password', { required: true })}
                   />
