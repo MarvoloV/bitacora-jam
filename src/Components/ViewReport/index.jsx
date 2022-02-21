@@ -8,7 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useSelector, useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import {
   Flex,
@@ -28,14 +28,17 @@ import {
 } from '@chakra-ui/react';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import jwtDecode from 'jwt-decode';
-import { sendOperation } from '../../store/actions/operationActions';
+import {
+  sendOperation,
+  fetchIdOperation,
+} from '../../store/actions/operationActions';
 import { fetchUser } from '../../store/actions/userActionsCreator';
 
 const SignupSchema = yup.object().shape({
   /* account: yup.string().required('Ingrese un correo electronico'), */
   amount: yup.string().required('Ingrese un nombre de Usuario'),
 });
-const AddOperation = () => {
+const ViewReport = () => {
   const {
     register,
     handleSubmit,
@@ -43,12 +46,19 @@ const AddOperation = () => {
     setValue,
     watch,
   } = useForm({ resolver: yupResolver(SignupSchema) });
+  const { id } = useParams();
   const watchShowAmount = watch();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const MySwal = withReactContent(Swal);
   const user = useSelector((state) => state.user.user);
   const token = useSelector((state) => state.auth.token);
+  const operation = useSelector((state) => state.operation.operationId);
+  console.log(
+    '🚀 ~ file: index.jsx ~ line 57 ~ ViewReport ~ operation',
+    operation,
+  );
+  const date = operation.dateOperation || '2022-02-15';
   const userIdFromToken = jwtDecode(token)._id || null;
   const [cotizante, setCotizante] = useState([]);
   const [value, onChange] = useState(new Date());
@@ -58,7 +68,12 @@ const AddOperation = () => {
   const accounts = user.accountId;
   useEffect(() => {
     dispatch(fetchUser(token, userIdFromToken));
+    dispatch(fetchIdOperation(id));
   }, [token]);
+  useEffect(() => {
+    onChange(date);
+  }, [date]);
+
   const parDivisa = [
     {
       base: 'AUD',
@@ -281,6 +296,7 @@ const AddOperation = () => {
                     onChange={onChange}
                     value={value}
                     format="dd-MM-y"
+                    disabled
                   />
                 </Center>
               </FormControl>
@@ -507,4 +523,4 @@ const AddOperation = () => {
     </Flex>
   );
 };
-export default AddOperation;
+export default ViewReport;

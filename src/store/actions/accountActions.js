@@ -31,7 +31,7 @@ export const hideLoader = () => ({
 
 export const loadAccounts = (accounts) => ({
   type: LOAD_ACCOUNTS,
-  payload: accounts.data,
+  payload: accounts,
 });
 
 export const createAccount = (account) => ({
@@ -59,8 +59,8 @@ export const fetchUpdateAccount = (newAccount, id) => async (dispatch) => {
   const responseAccount = await patchAccount(newAccount, id);
   dispatch(updateAccount(responseAccount));
 };
-export const fetchAccounts = () => async (dispatch) => {
-  const accounts = await getAccounts();
+export const fetchAccounts = (id) => async (dispatch) => {
+  const accounts = await getAccounts(id);
   dispatch(loadAccounts(accounts));
 };
 

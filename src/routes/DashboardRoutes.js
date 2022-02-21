@@ -7,25 +7,27 @@ import OperationsPage from '../Pages/OperationsPage';
 import ProfilePage from '../Pages/ProfilePage/index';
 import ReportAccount from '../Pages/ReportAccount';
 import CalculatorPage from '../Pages/CalculatorPage/index';
+import ViewOperationPage from '../Pages/ViewOperationPage/index';
 
 const DashboardRoutes = () => (
-  <div>
-    <Routes>
-      <Route path="home" element={<DashboardPage />} />
-      <Route path="profile" element={<ProfilePage />} />
-      <Route path="createaccount" element={<CreateAccountPage />} />
-      <Route path="reportaccount/:id" element={<ReportAccount />} />
-      <Route path="operations" element={<OperationsPage />} />
-      <Route path="createOperation" element={<CreateOperationPage />} />
-      <Route path="calculator" element={<CalculatorPage />} />
-      {/* <Route path="marvel" element={<MarvelScreen />} />
+  <Routes>
+    <Route path="home" element={<DashboardPage />} />
+    <Route path="profile" element={<ProfilePage />} />
+    <Route path="createaccount" element={<CreateAccountPage />} />
+    <Route path="reportaccount/:id" element={<ReportAccount />} />
+    <Route path="createOperation" element={<CreateOperationPage />} />
+    <Route path="calculator" element={<CalculatorPage />} />
+    <Route path="operations" element={<OperationsPage />}>
+      {/* <Route path="viewoperation/:id" element={<ViewOperationPage />} /> */}
+    </Route>
+    <Route path="viewoperation/:id" element={<ViewOperationPage />} />
+    {/* <Route path="marvel" element={<MarvelScreen />} />
         <Route path="dc" element={<DcScreen />} />
         <Route path="search" element={<SearchScreen />} />
         <Route path="hero/:heroeId" element={<HeroScreen />} />
         <Route path="/" element={<MarvelScreen />} /> */}
-      <Route path="/*" element={<NotFound />} />
-    </Routes>
-  </div>
+    <Route path="/*" element={<NotFound />} />
+  </Routes>
 );
 
 export default DashboardRoutes;

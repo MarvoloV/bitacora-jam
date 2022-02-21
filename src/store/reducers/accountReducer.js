@@ -14,6 +14,7 @@ import {
 
 const initialState = {
   accounts: { account: [], loaded: false },
+  operations: { operation: [] },
   // products: { items: [], loaded: false },
   // idProduct: '',
   // idMarket: '',
@@ -24,17 +25,22 @@ const initialState = {
 const accountReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOAD_ACCOUNTS:
-      return { ...state, accounts: { items: action.payload, loaded: true } };
+      return {
+        ...state,
+        operations: {
+          operation: action.payload,
+        },
+      };
     case CREATE_ACCOUNT:
       return {
         ...state,
         accounts: {
-          items: [...state.accounts.items, action.payload],
+          account: [...state.accounts.account, action.payload],
           loaded: true,
         },
       };
     case UPDATE_ACCOUNT: {
-      const newData = state.accounts.items.map((el) => {
+      const newData = state.accounts.account.map((el) => {
         if (el._id === action.payload._id) {
           return action.payload;
         }
@@ -44,7 +50,7 @@ const accountReducer = (state = initialState, action) => {
       return {
         ...state,
         accounts: {
-          items: newData,
+          account: newData,
           loaded: true,
         },
       };
@@ -57,13 +63,13 @@ const accountReducer = (state = initialState, action) => {
     case PATCH_ACCOUNT:
       return { ...state, product: action.payload };
     case DELETE_ACCOUNT: {
-      const newData = state.accounts.items.filter(
+      const newData = state.accounts.account.filter(
         (el) => el._id !== action.payload._id,
       );
       return {
         ...state,
         accounts: {
-          items: newData,
+          account: newData,
           loaded: true,
         },
       };

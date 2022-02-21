@@ -3,9 +3,13 @@ import axios from 'axios';
 
 const URL_BASE = process.env.REACT_APP_API_URL_BASE || 'http://localhost:8080';
 
-export const getAccounts = async () => {
+/* export const getAccounts = async () => {
   const response = await axios.get(`${URL_BASE}/api/account`);
   return response;
+}; */
+export const getAccounts = async (id) => {
+  const response = await axios.get(`${URL_BASE}/api/account/${id}`);
+  return response.data.operationId;
 };
 
 export const patchAccount = async (newAccount, id) => {
@@ -23,22 +27,21 @@ export const patchAccount = async (newAccount, id) => {
   return responseProduct.data;
 };
 
-// export const patchUser = async (marketArray, id) => {
-//   const marketupdate = { marketId: marketArray };
-//   const token = JSON.parse(localStorage.getItem('token'));
-//   const responseUser = await axios.patch(
-//     `${URL_BASE}/api/user/${id}`,
-//     marketupdate,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         'Content-Type': 'application/json',
-//       },
-//     },
-//   );
-//   return responseUser.data;
-// };
-
+export const patchAccountOperations = async (operationArray, id) => {
+  const operationUpdate = { operationId: operationArray };
+  const token = JSON.parse(localStorage.getItem('token'));
+  const responseAccount = await axios.patch(
+    `${URL_BASE}/api/account/${id}`,
+    operationUpdate,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+  return responseAccount.data;
+};
 export const getAccount = async (id) => {
   const response = await axios.get(`${URL_BASE}/api/account/${id}`);
   return response.data;
