@@ -41,7 +41,8 @@ const Register = () => {
   } = useForm({ resolver: yupResolver(SignupSchema) });
   const handleShowClick = () => setShowPassword(!showPassword);
   const handleReShowClick = () => setShowRePassword(!showRePassword);
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = () => {};
+  /* const onSubmit = (data) => console.log(data); */
   return (
     <Flex
       flexDirection="row"

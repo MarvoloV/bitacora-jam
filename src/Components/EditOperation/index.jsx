@@ -240,7 +240,6 @@ const EditOperation = () => {
         html: <i>{`Alguno de los campos es innválido. ${error}`}</i>,
         icon: 'error',
       });
-      console.error(error);
     }
   };
   useEffect(() => {

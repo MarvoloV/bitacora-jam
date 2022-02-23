@@ -204,10 +204,6 @@ const AddOperation = () => {
         typeOfEntry,
         confirmationsOperation,
       };
-      console.log(
-        '🚀 ~ file: index.jsx ~ line 207 ~ AddOperation ~ newFormAccount',
-        newFormAccount,
-      );
       dispatch(
         sendOperation(newFormAccount, accountUser.operationId, accountUser._id),
       );
@@ -223,7 +219,6 @@ const AddOperation = () => {
         html: <i>{`Alguno de los campos es innválido. ${error}`}</i>,
         icon: 'error',
       });
-      console.error(error);
     }
   };
   useEffect(() => {

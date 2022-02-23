@@ -31,7 +31,8 @@ const Profile = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(SignupSchema) });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = () => {};
+  /* const onSubmit = (data) => {}; */
   return (
     <Box>
       <Text color="gray.500" fontSize={15} fontWeight="light">
