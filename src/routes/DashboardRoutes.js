@@ -8,6 +8,7 @@ import ProfilePage from '../Pages/ProfilePage/index';
 import ReportAccount from '../Pages/ReportAccount';
 import CalculatorPage from '../Pages/CalculatorPage/index';
 import ViewOperationPage from '../Pages/ViewOperationPage/index';
+import EditOperationPage from '../Pages/EditOperationPage/index';
 
 const DashboardRoutes = () => (
   <Routes>
@@ -21,6 +22,7 @@ const DashboardRoutes = () => (
       {/* <Route path="viewoperation/:id" element={<ViewOperationPage />} /> */}
     </Route>
     <Route path="viewoperation/:id" element={<ViewOperationPage />} />
+    <Route path="editoperation/:id" element={<EditOperationPage />} />
     {/* <Route path="marvel" element={<MarvelScreen />} />
         <Route path="dc" element={<DcScreen />} />
         <Route path="search" element={<SearchScreen />} />

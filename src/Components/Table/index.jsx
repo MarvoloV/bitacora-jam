@@ -54,6 +54,9 @@ const TableData = () => {
   const HandleReportOperation = (id) => {
     navigate(`/pages/viewoperation/${id}`);
   };
+  const HandleEditOperation = (id) => {
+    navigate(`/pages/editoperation/${id}`);
+  };
   return (
     <>
       <Select
@@ -141,7 +144,11 @@ const TableData = () => {
                       colorScheme="blue"
                       icon={<BsBoxArrowUpRight />}
                     />
-                    <IconButton colorScheme="green" icon={<AiFillEdit />} />
+                    <IconButton
+                      onClick={() => HandleEditOperation(operationDate._id)}
+                      colorScheme="green"
+                      icon={<AiFillEdit />}
+                    />
                     <IconButton
                       colorScheme="red"
                       variant="outline"
