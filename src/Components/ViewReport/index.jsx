@@ -48,14 +48,17 @@ const ViewReport = () => {
   }, [token]);
   useEffect(() => {
     onChange(date);
+    setValue('tradingResult', `${operation.tradingResult}`);
     setValue('account', `${operation.account}`);
     setValue('currencyPair', `${operation.currencyPair}`);
     setValue('amount', `${operation.operationAmount}`);
     setValue('stopLoss', `${operation.stopLoss}`);
+    setValue('takeProfit', `${operation.takeProfit}`);
     setValue('linkEntry', `${operation.linkEntry}`);
     setValue('typeOfEntry', `${operation.typeOfEntry}`);
     setValue('risk', `${operation.risk}`);
     setValue('lottery', `${operation.lottery}`);
+    setValue('riskBenefit,', `${operation.riskBenefit}`);
     setConfirmationsOperation(operation.confirmationsOperation);
   }, [date]);
 
@@ -262,7 +265,7 @@ const ViewReport = () => {
                 <FormControl mt={2} width={220}>
                   <Center>
                     <FormLabel
-                      htmlFor="TakeProfit"
+                      htmlFor="takeProfit"
                       fontSize={20}
                       fontWeight="bold"
                     >
@@ -272,8 +275,8 @@ const ViewReport = () => {
                   <InputGroup>
                     <Input
                       type="text"
-                      id="TakeProfit"
-                      {...register('TakeProfit')}
+                      id="takeProfit"
+                      {...register('takeProfit')}
                       borderColor={useColorModeValue('black', 'white')}
                       isReadOnly
                       textAlign="center"
@@ -298,6 +301,7 @@ const ViewReport = () => {
                       {...register('risk')}
                       borderColor={useColorModeValue('black', 'white')}
                       isReadOnly
+                      textAlign="center"
                     />
                   </InputGroup>
                 </FormControl>
@@ -317,6 +321,7 @@ const ViewReport = () => {
                     {...register('lottery')}
                     borderColor={useColorModeValue('black', 'white')}
                     isReadOnly
+                    textAlign="center"
                   />
                 </FormControl>
               </Box>

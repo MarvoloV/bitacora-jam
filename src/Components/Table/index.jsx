@@ -13,6 +13,7 @@ import {
   Select,
   Box,
   Link,
+  Button,
   /* GridItem, */
 } from '@chakra-ui/react';
 import { AiFillEdit } from 'react-icons/ai';
@@ -20,6 +21,7 @@ import { BsBoxArrowUpRight, BsFillTrashFill } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
+import { AddIcon } from '@chakra-ui/icons';
 import { fetchUser } from '../../store/actions/userActionsCreator';
 import { fetchAccounts } from '../../store/actions/accountActions';
 
@@ -40,6 +42,9 @@ const TableData = () => {
   const userIdFromToken = jwtDecode(token)._id || null;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const handlerSubmit = () => {
+    navigate('/pages/createoperation');
+  };
   useEffect(() => {
     dispatch(fetchUser(token, userIdFromToken));
   }, [token]);
@@ -59,18 +64,39 @@ const TableData = () => {
   };
   return (
     <>
-      <Select
-        id="account"
-        placeholder="Seleccionar Cuenta"
-        border="2px solid"
-        onClick={handlerAccountName}
-      >
-        {accountId?.map((accountData) => (
-          <option key={accountData._id} value={accountData.accountName}>
-            {accountData.accountName}
-          </option>
-        ))}
-      </Select>
+      <Box display="flex" justifyContent="space-around" mt={10} height={5}>
+        <Select
+          id="account"
+          placeholder="Seleccionar Cuenta"
+          onClick={handlerAccountName}
+          bg={useColorModeValue('gray.100', 'gray.700')}
+          borderColor={useColorModeValue('black', 'gray.700')}
+          width={600}
+        >
+          {accountId?.map((accountData) => (
+            <option key={accountData._id} value={accountData.accountName}>
+              {accountData.accountName}
+            </option>
+          ))}
+        </Select>
+        <Button
+          bg={useColorModeValue('teal.300', 'teal.600')}
+          variant="outline"
+          rightIcon={<AddIcon />}
+          rounded="xl"
+          mb={10}
+          _hover={{
+            bg: 'teal.500',
+          }}
+          _focus={{
+            bg: 'teal.500',
+          }}
+          onClick={handlerSubmit}
+        >
+          Agregar Una Cuenta
+        </Button>
+      </Box>
+
       <Flex w="full" p={50} alignItems="center" justifyContent="center">
         <Stack
           direction={{ base: 'column' }}
