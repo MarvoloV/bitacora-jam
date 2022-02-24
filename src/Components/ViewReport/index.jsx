@@ -31,7 +31,7 @@ const SignupSchema = yup.object().shape({
   amount: yup.string().required('Ingrese un nombre de Usuario'),
 });
 const ViewReport = () => {
-  const { register, setValue } = useForm({
+  const { register, reset } = useForm({
     resolver: yupResolver(SignupSchema),
   });
   const { id } = useParams();
@@ -48,17 +48,12 @@ const ViewReport = () => {
   }, [token]);
   useEffect(() => {
     onChange(date);
-    setValue('tradingResult', `${operation.tradingResult}`);
-    setValue('account', `${operation.account}`);
-    setValue('currencyPair', `${operation.currencyPair}`);
-    setValue('amount', `${operation.operationAmount}`);
-    setValue('stopLoss', `${operation.stopLoss}`);
-    setValue('takeProfit', `${operation.takeProfit}`);
-    setValue('linkEntry', `${operation.linkEntry}`);
-    setValue('typeOfEntry', `${operation.typeOfEntry}`);
-    setValue('risk', `${operation.risk}`);
-    setValue('lottery', `${operation.lottery}`);
-    setValue('riskBenefit,', `${operation.riskBenefit}`);
+    if (date) {
+      reset({
+        ...operation,
+        amount: operation.operationAmount,
+      });
+    }
     setConfirmationsOperation(operation.confirmationsOperation);
   }, [date]);
 

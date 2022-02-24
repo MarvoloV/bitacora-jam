@@ -28,12 +28,12 @@ const operationReducer = (state = initialState, action) => {
       return {
         ...state,
         operations: {
-          operation: [...state.operations.items, action.payload],
+          operation: action.payload,
           loaded: true,
         },
       };
     case UPDATE_OPERATION: {
-      const newData = state.operations.items.map((el) => {
+      const newData = state.operations.operation.map((el) => {
         if (el._id === action.payload._id) {
           return action.payload;
         }
@@ -56,13 +56,13 @@ const operationReducer = (state = initialState, action) => {
     case PATCH_OPERATION:
       return { ...state, product: action.payload };
     case DELETE_OPERATION: {
-      const newData = state.operations.items.filter(
+      const newData = state.operations.operation.filter(
         (el) => el._id !== action.payload._id,
       );
       return {
         ...state,
         operations: {
-          items: newData,
+          operation: newData,
           loaded: true,
         },
       };

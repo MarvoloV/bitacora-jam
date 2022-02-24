@@ -57,6 +57,7 @@ const Calculator = () => {
     const amount = parseInt(watchShowAmount.amount || 0, 10);
     const riskData = (100 * amount) / (accountData.accountAmount || 0);
     setValue('risk', riskData);
+    setValue('accountTotal', accountData.accountAmount);
   };
   const handlerLottery = () => {
     const PriceCotice = PrecioCotizante.find(
@@ -109,27 +110,64 @@ const Calculator = () => {
             mb={10}
           >
             <form>
-              <FormControl mt={2}>
-                <Center>
-                  <FormLabel htmlFor="account" fontSize={20} fontWeight="bold">
-                    Elegir cuenta
-                  </FormLabel>
-                </Center>
-                <Select
-                  id="account"
-                  placeholder="Seleccionar Cuenta"
-                  {...register('account', { required: true })}
-                  borderColor={useColorModeValue('black', 'white')}
-                  textAlign="center"
-                  _hover={{}}
-                >
-                  {accounts?.map((account) => (
-                    <option key={account._id} value={account.accountName}>
-                      {account.accountName}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
+              <Box
+                display="flex"
+                flexDir="row"
+                justifyContent="space-between"
+                flexWrap="wrap"
+              >
+                <FormControl mt={2} width={200}>
+                  <Center>
+                    <FormLabel
+                      htmlFor="account"
+                      fontSize={20}
+                      fontWeight="bold"
+                    >
+                      Elegir cuenta
+                    </FormLabel>
+                  </Center>
+                  <Select
+                    id="account"
+                    placeholder="Seleccionar Cuenta"
+                    {...register('account', { required: true })}
+                    borderColor={useColorModeValue('black', 'white')}
+                    textAlign="center"
+                    _hover={{}}
+                  >
+                    {accounts?.map((account) => (
+                      <option key={account._id} value={account.accountName}>
+                        {account.accountName}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl mt={2} width={200}>
+                  <Center>
+                    <FormLabel
+                      htmlFor="accountTotal"
+                      fontSize={20}
+                      fontWeight="bold"
+                    >
+                      CUENTA
+                    </FormLabel>
+                  </Center>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      fontSize="1.2em"
+                      children="$"
+                    />
+                    <Input
+                      id="accountTotal"
+                      {...register('accountTotal', { required: true })}
+                      borderColor={useColorModeValue('black', 'white')}
+                      textAlign="center"
+                      _hover={{}}
+                    />
+                  </InputGroup>
+                </FormControl>
+              </Box>
+
               <FormControl mt={2}>
                 <Center>
                   <FormLabel

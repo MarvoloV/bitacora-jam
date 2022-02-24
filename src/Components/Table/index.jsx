@@ -26,15 +26,6 @@ import { fetchUser } from '../../store/actions/userActionsCreator';
 import { fetchAccounts } from '../../store/actions/accountActions';
 
 const TableData = () => {
-  // const header = ['name', 'created', 'actions'];
-  /* const data = [
-    { name: 'Daggy', created: '7 days ago' },
-    { name: 'Anubra', created: '23 hours ago' },
-    { name: 'Josef', created: 'A few seconds ago' },
-    { name: 'Sage', created: 'A few hours ago' },
-  ]; */
-
-  /* currencyPair */
   const user = useSelector((state) => state.user.user);
   const { operation } = useSelector((state) => state.account.operations);
   const { accountId } = user;
@@ -49,7 +40,7 @@ const TableData = () => {
     dispatch(fetchUser(token, userIdFromToken));
   }, [token]);
   const handlerAccountName = (e) => {
-    const accountData = accountId.find(
+    const accountData = accountId?.find(
       (dataAccount) => dataAccount.accountName === e.target.value,
     );
     if (accountData) {
@@ -97,7 +88,7 @@ const TableData = () => {
         </Button>
       </Box>
 
-      <Flex w="full" p={50} alignItems="center" justifyContent="center">
+      <Flex w="full" pt={10} alignItems="center" justifyContent="center">
         <Stack
           direction={{ base: 'column' }}
           w="full"
@@ -106,7 +97,8 @@ const TableData = () => {
         >
           <Grid
             /* spacingY={3} */
-            templateColumns="1fr 2fr 1fr 1fr 1fr"
+            templateColumns="repeat(7, 1fr)"
+            gap={6}
             w={{ base: 120, md: 'full' }}
             textTransform="uppercase"
             /* bg={useColorModeValue('gray.100', 'gray.700')}
@@ -119,71 +111,84 @@ const TableData = () => {
           >
             <Box>PAR DE DIVISA</Box>
             <Box>LINK DE ENTRADA </Box>
+            <Box>% DE RIESGO </Box>
+            <Box>RIESGO:BENEFICIO </Box>
             <Box>TIPO DE OPERACION</Box>
             <Box>FECHA </Box>
             <Box>Actions</Box>
             {/* <chakra.span textAlign={{ md: 'center' }}>Actions</chakra.span> */}
           </Grid>
           {operation?.map((operationDate) => (
-            <Flex
-              direction={{ base: 'row', md: 'column' }}
-              /* bg={useColorModeValue('white', 'gray.800')} */
+            <Grid
               key={operationDate._id}
+              /* spacingY={3} */
+              templateColumns="repeat(7, 1fr)"
+              gap={6}
+              /* columns={{ base: 1, md: 4 }} */
+              w="full"
+              py={2}
+              px={10}
+              fontWeight="hairline"
             >
-              <Grid
-                /* spacingY={3} */
-                templateColumns="1fr 2fr 1fr  1fr 1fr"
-                /* columns={{ base: 1, md: 4 }} */
-                w="full"
-                py={2}
-                px={10}
-                fontWeight="hairline"
+              <Box>{operationDate.currencyPair}</Box>
+              <Box
+                textOverflow="ellipsis"
+                overflow="hidden"
+                whiteSpace="nowrap"
+                textAlign="center"
               >
-                <Box>{operationDate.currencyPair}</Box>
-                <Box
-                  textOverflow="ellipsis"
-                  overflow="hidden"
-                  whiteSpace="nowrap"
-                >
-                  <Link href={operationDate.linkEntry} isExternal>
-                    {operationDate.linkEntry}
-                  </Link>
-                </Box>
-                <Box
-                  textOverflow="ellipsis"
-                  overflow="hidden"
-                  whiteSpace="nowrap"
-                >
-                  {operationDate.typeOfEntry}
-                </Box>
-                <Box
-                  textOverflow="ellipsis"
-                  overflow="hidden"
-                  whiteSpace="nowrap"
-                >
-                  {operationDate.dateOperation.substr(0, 10)}
-                </Box>
-                <Flex justify={{ md: 'center' }}>
-                  <ButtonGroup variant="solid" size="sm" spacing={3}>
-                    <IconButton
-                      onClick={() => HandleReportOperation(operationDate._id)}
-                      colorScheme="blue"
-                      icon={<BsBoxArrowUpRight />}
-                    />
-                    <IconButton
-                      onClick={() => HandleEditOperation(operationDate._id)}
-                      colorScheme="green"
-                      icon={<AiFillEdit />}
-                    />
-                    <IconButton
-                      colorScheme="red"
-                      variant="outline"
-                      icon={<BsFillTrashFill />}
-                    />
-                  </ButtonGroup>
-                </Flex>
-              </Grid>
-            </Flex>
+                <Link href={operationDate.linkEntry} isExternal>
+                  {operationDate.linkEntry}
+                </Link>
+              </Box>
+              <Box
+                textOverflow="ellipsis"
+                overflow="hidden"
+                whiteSpace="nowrap"
+              >
+                {operationDate.risk}
+              </Box>
+              <Box
+                textOverflow="ellipsis"
+                overflow="hidden"
+                whiteSpace="nowrap"
+              >
+                {operationDate.riskBenefit}
+              </Box>
+              <Box
+                textOverflow="ellipsis"
+                overflow="hidden"
+                whiteSpace="nowrap"
+              >
+                {operationDate.typeOfEntry}
+              </Box>
+              <Box
+                textOverflow="ellipsis"
+                overflow="hidden"
+                whiteSpace="nowrap"
+              >
+                {operationDate.dateOperation.substr(0, 10)}
+              </Box>
+              <Flex justify={{ md: 'center' }}>
+                <ButtonGroup variant="solid" size="sm" spacing={3}>
+                  <IconButton
+                    onClick={() => HandleReportOperation(operationDate._id)}
+                    colorScheme="blue"
+                    icon={<BsBoxArrowUpRight />}
+                  />
+                  <IconButton
+                    onClick={() => HandleEditOperation(operationDate._id)}
+                    colorScheme="green"
+                    icon={<AiFillEdit />}
+                  />
+                  <IconButton
+                    colorScheme="red"
+                    variant="outline"
+                    icon={<BsFillTrashFill />}
+                  />
+                </ButtonGroup>
+              </Flex>
+            </Grid>
           ))}
         </Stack>
       </Flex>

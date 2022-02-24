@@ -1,9 +1,11 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-children-prop */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-date-picker';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSelector, useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -30,7 +32,7 @@ import { FaRegTimesCircle } from 'react-icons/fa';
 import jwtDecode from 'jwt-decode';
 import {
   fetchIdOperation,
-  sendOperation,
+  fetchUpdateOperation,
 } from '../../store/actions/operationActions';
 import { fetchUser } from '../../store/actions/userActionsCreator';
 import { parDivisa, PrecioCotizante } from '../../data/data';
@@ -40,24 +42,27 @@ const SignupSchema = yup.object().shape({
   amount: yup.string().required('Ingrese un nombre de Usuario'),
 });
 const EditOperation = () => {
+  const operation = useSelector((state) => state.operation.operationId);
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
     watch,
-  } = useForm({ resolver: yupResolver(SignupSchema) });
+    reset,
+    control,
+  } = useForm({
+    resolver: yupResolver(SignupSchema),
+  });
   const { id } = useParams();
   const watchShowAmount = watch();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const MySwal = withReactContent(Swal);
   const user = useSelector((state) => state.user.user);
-  const operation = useSelector((state) => state.operation.operationId);
   const token = useSelector((state) => state.auth.token);
   const userIdFromToken = jwtDecode(token)._id || null;
   const [cotizante, setCotizante] = useState([]);
-  const [value, onChange] = useState(new Date());
   const [accountconfirmations, setAccountConfirmations] = useState([]);
   const [accountUser, setAccountUser] = useState({});
   const [confirmationsOperation, setConfirmationsOperation] = useState([]);
@@ -67,19 +72,14 @@ const EditOperation = () => {
     dispatch(fetchIdOperation(id));
   }, [token]);
   useEffect(() => {
-    setValue('account', `${operation.account}`);
-    setValue('currencyBase', `${operation.currencyBase}`);
-    setValue('currencyQuote', `${operation.currencyQuote}`);
-    setValue('amount', `${operation.operationAmount}`);
-    setValue('stopLoss', `${operation.stopLoss}`);
-    setValue('takeProfit', `${operation.takeProfit}`);
-    setValue('linkEntry', `${operation.linkEntry}`);
-    setValue('typeOfEntry', `${operation.typeOfEntry}`);
-    setValue('risk', `${operation.risk}`);
-    setValue('lottery', `${operation.lottery}`);
-    setValue('riskBenefit,', `${operation.riskBenefit}`);
-    setValue('tradingResult', `${operation.tradingResult}`);
     setConfirmationsOperation(operation.confirmationsOperation);
+    if (operation.dateOperation) {
+      reset({
+        ...operation,
+        dateOperation: new Date(operation.dateOperation),
+        amount: operation.operationAmount,
+      });
+    }
   }, [operation]);
   const handlerRisk = () => {
     const accountData = accounts?.find(
@@ -138,17 +138,59 @@ const EditOperation = () => {
     const takeProfit = parseInt(watchShowAmount.takeProfit, 10) || 0;
     if (stopLoss && takeProfit) {
       const riskBenefit = takeProfit / stopLoss;
-      setValue('riskBenefit', `1:${riskBenefit}`);
+      if (riskBenefit % 1 === 0) {
+        setValue('riskBenefit', `1:${riskBenefit}`);
+      } else {
+        setValue('riskBenefit', `1:${riskBenefit.toFixed(1)}`);
+      }
     }
   };
+  const handlerResultOperation = () => {
+    if (
+      !watchShowAmount.resultPercentage &&
+      !watchShowAmount.resultMoney &&
+      !watchShowAmount.resultPips
+    ) {
+      const stopLoss = parseInt(watchShowAmount.stopLoss, 10) || 0;
+      const takeProfit = parseInt(watchShowAmount.takeProfit, 10) || 0;
+      const riskBenefit = takeProfit / stopLoss;
+      const valuePip = watchShowAmount.amount / watchShowAmount.stopLoss;
+      if (watchShowAmount.tradingResult === 'GANADA') {
+        if (riskBenefit % 1 === 0) {
+          const resultPercentageOp = watchShowAmount.risk * riskBenefit;
+          setValue('resultPercentage', resultPercentageOp);
+        } else {
+          const resultPercentageOp =
+            watchShowAmount.risk * riskBenefit.toFixed(2);
+          setValue('resultPercentage', resultPercentageOp);
+        }
+        setValue('resultPips', watchShowAmount.takeProfit);
+        setValue('resultMoney', valuePip * takeProfit);
+      } else if (watchShowAmount.tradingResult === 'PERDIDA') {
+        if (riskBenefit % 1 === 0) {
+          const resultPercentageOp = watchShowAmount.risk * riskBenefit;
+          setValue('resultPercentage', resultPercentageOp * -1);
+        } else {
+          const resultPercentageOp =
+            watchShowAmount.risk * riskBenefit.toFixed(2);
+          setValue('resultPercentage', resultPercentageOp * -1);
+        }
+        setValue('resultPips', watchShowAmount.takeProfit * -1);
+        setValue('resultMoney', valuePip * takeProfit * -1);
+      }
+    }
+
+    /* -0.08 */
+  };
   const onSubmit = async ({
-    stopLoss,
-    amount,
-    currencyBase,
-    currencyQuote,
+    dateOperation,
     account,
     tradingResult,
+    currencyBase,
+    currencyQuote,
+    amount,
     typeOfEntry,
+    stopLoss,
     takeProfit,
     linkEntry,
     linkOutput,
@@ -162,15 +204,15 @@ const EditOperation = () => {
     try {
       const currencyPair = `${currencyBase}/${currencyQuote}`;
       const newFormAccount = {
-        dateOperation: value,
+        dateOperation,
         account,
         tradingResult,
         currencyBase,
         currencyQuote,
         currencyPair,
         operationAmount: amount,
-        stopLoss,
         typeOfEntry,
+        stopLoss,
         takeProfit,
         confirmationsOperation,
         linkEntry,
@@ -182,12 +224,10 @@ const EditOperation = () => {
         resultPercentage,
         resultMoney,
       };
-      dispatch(
-        sendOperation(newFormAccount, accountUser.operationId, accountUser._id),
-      );
+      dispatch(fetchUpdateOperation(newFormAccount, id));
       await MySwal.fire({
         title: <strong>Buen trabajo!</strong>,
-        html: <i>Operacion Creada!</i>,
+        html: <i>Operacion Actualizada!</i>,
         icon: 'success',
       });
       navigate('/pages/operations');
@@ -219,9 +259,9 @@ const EditOperation = () => {
       handlerConfirmation();
     }
   }, [watchShowAmount.confirmations]);
-
-  //  console.log('🚀 ~ file: index.jsx ~ line 170 ~ AddOperation ~ value', value);
-  // const dateFormat = value.toLocaleDateString();
+  useEffect(() => {
+    handlerResultOperation();
+  }, [watchShowAmount.tradingResult]);
 
   return (
     <Flex flexDirection="row">
@@ -252,10 +292,16 @@ const EditOperation = () => {
                   </FormLabel>
                 </Center>
                 <Center flexDirection="row" justifyContent="space-around">
-                  <DatePicker
-                    onChange={onChange}
-                    value={value}
-                    format="dd-MM-y"
+                  <Controller
+                    control={control}
+                    name="dateOperation"
+                    render={({ field: { onChange, value } }) => (
+                      <DatePicker
+                        onChange={onChange}
+                        value={value}
+                        format="dd-MM-y"
+                      />
+                    )}
                   />
                 </Center>
               </FormControl>
@@ -347,7 +393,6 @@ const EditOperation = () => {
                     borderColor={useColorModeValue('black', 'white')}
                     width="250px"
                     textAlign="center"
-                    value={operation.currencyQuote}
                   >
                     {cotizante?.map((divisa) => (
                       <option key={divisa} value={divisa}>
@@ -377,7 +422,8 @@ const EditOperation = () => {
                       children="$"
                     />
                     <Input
-                      type="text"
+                      type="number"
+                      step="any"
                       id="amount"
                       {...register('amount')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -426,7 +472,8 @@ const EditOperation = () => {
                   </Center>
                   <InputGroup>
                     <Input
-                      type="text"
+                      type="number"
+                      step="any"
                       id="stopLoss"
                       {...register('stopLoss')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -447,7 +494,8 @@ const EditOperation = () => {
                   </Center>
                   <InputGroup>
                     <Input
-                      type="text"
+                      type="number"
+                      step="any"
                       id="takeProfit"
                       {...register('takeProfit')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -632,7 +680,8 @@ const EditOperation = () => {
                   </Center>
                   <InputGroup>
                     <Input
-                      type="text"
+                      type="number"
+                      step="any"
                       id="resultPips"
                       {...register('resultPips')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -664,7 +713,8 @@ const EditOperation = () => {
                       children="%"
                     />
                     <Input
-                      type="text"
+                      type="number"
+                      step="any"
                       id="resultPercentage"
                       {...register('resultPercentage')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -690,6 +740,7 @@ const EditOperation = () => {
                     />
                     <Input
                       type="number"
+                      step="any"
                       id="resultMoney"
                       {...register('resultMoney')}
                       borderColor={useColorModeValue('black', 'white')}
