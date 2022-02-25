@@ -5,10 +5,11 @@ import {
   LOAD_OPERATIONS,
   GET_ID_OPERATION,
   UPDATE_OPERATION,
-  /*   PATCH_OPERATION, */
   SHOW_LOADER,
   HIDE_LOADER,
   DELETE_OPERATION,
+  LOAD_OPERATION_DATE,
+  CLEAN_OPERATION_DATE,
 } from '../types/operationTypes';
 import {
   getOperations,
@@ -16,6 +17,7 @@ import {
   patchOperation,
   deletedOperation,
   getOperation,
+  postOperationDate,
 } from '../services/operationServices';
 import { patchAccountOperations } from '../services/accountServices';
 // import { fetchUpdateUser } from './userActionsCreator';
@@ -32,7 +34,7 @@ export const hideLoader = () => ({
 
 export const loadOperations = (operations) => ({
   type: LOAD_OPERATIONS,
-  payload: operations.data,
+  payload: operations,
 });
 
 export const createOperation = (operation) => ({
@@ -51,6 +53,14 @@ export const deleteOperation = (operation) => ({
 export const loadOperationID = (operation) => ({
   type: GET_ID_OPERATION,
   payload: operation,
+});
+export const loadOperationDate = (operationDate) => ({
+  type: LOAD_OPERATION_DATE,
+  payload: operationDate,
+});
+export const cleanOperationDate = (operationDate) => ({
+  type: CLEAN_OPERATION_DATE,
+  payload: operationDate,
 });
 /* export const fetchIdOperation = (id) => async (dispatch) => {
   dispatch({
@@ -84,3 +94,11 @@ export const sendOperation =
     patchAccountOperations(operationArray, id);
     dispatch(createOperation(responseOperation));
   };
+export const fetchOperationDate =
+  (id, startDate, endDate) => async (dispatch) => {
+    const responseOperation = await postOperationDate(id, startDate, endDate);
+    dispatch(loadOperationDate(responseOperation));
+  };
+export const cleanedOperationDate = () => async (dispatch) => {
+  dispatch(cleanOperationDate([]));
+};

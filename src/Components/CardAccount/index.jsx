@@ -55,12 +55,12 @@ const CardAccount = ({ accountName, accountAmount, accountType, id }) => {
         <Box bg={useColorModeValue('gray.50', 'gray.900')} px={6} py={10}>
           <List spacing={3}>
             <ListItem>
-              <ListIcon as={CheckIcon} color="teal.400" />$ {accountAmount}{' '}
-              dolares
+              <ListIcon as={CheckIcon} color="teal.400" />
+              Monto de la cuenta: ${accountAmount} dolares
             </ListItem>
             <ListItem>
               <ListIcon as={CheckIcon} color="teal.400" />
-              {accountType}
+              Tipo de Cuenta : {accountType}
             </ListItem>
           </List>
 

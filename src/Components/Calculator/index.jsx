@@ -24,6 +24,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { fetchUser } from '../../store/actions/userActionsCreator';
+import { parDivisa, PrecioCotizante } from '../../data/data';
 
 const SignupSchema = yup.object().shape({
   /* account: yup.string().required('Ingrese un correo electronico'), */
@@ -49,74 +50,6 @@ const Calculator = () => {
   useEffect(() => {
     dispatch(fetchUser(token, userIdFromToken));
   }, [token]);
-  const parDivisa = [
-    {
-      base: 'AUD',
-      cotizante: ['CAD', 'CHF', 'JPY', 'NZD', 'USD'],
-    },
-    {
-      base: 'CAD',
-      cotizante: ['CHF', 'JPY'],
-    },
-    {
-      base: 'CHF',
-      cotizante: ['JPY'],
-    },
-    {
-      base: 'EUR',
-      cotizante: ['AUD', 'CAD', 'CHF', 'GBP', 'JPY', 'NZD', 'USD'],
-    },
-    {
-      base: 'GBP',
-      cotizante: ['AUD', 'CAD', 'CHF', 'JPY', 'NZD', 'USD'],
-    },
-    {
-      base: 'NZD',
-      cotizante: ['CAD', 'CHF', 'JPY', 'USD'],
-    },
-    {
-      base: 'USD',
-      cotizante: ['CAD', 'CHF', 'JPY'],
-    },
-    {
-      base: 'XAU',
-      cotizante: ['USD'],
-    },
-    {
-      base: 'XAG',
-      cotizante: ['USD'],
-    },
-  ];
-  const PrecioCotizante = [
-    {
-      cotizante: 'CAD',
-      costo: 7.84,
-    },
-    {
-      cotizante: 'CHF',
-      costo: 10.85,
-    },
-    {
-      cotizante: 'JPY',
-      costo: 8.69,
-    },
-    {
-      cotizante: 'NZD',
-      costo: 6.7,
-    },
-    {
-      cotizante: 'USD',
-      costo: 10,
-    },
-    {
-      cotizante: 'GBP',
-      costo: 13.6,
-    },
-    {
-      cotizante: 'AUD',
-      costo: 7.18,
-    },
-  ];
   const handlerRisk = () => {
     const accountData = accounts.find(
       (account) => account.accountName === watchShowAmount.account,
@@ -124,6 +57,7 @@ const Calculator = () => {
     const amount = parseInt(watchShowAmount.amount || 0, 10);
     const riskData = (100 * amount) / (accountData.accountAmount || 0);
     setValue('risk', riskData);
+    setValue('accountTotal', accountData.accountAmount);
   };
   const handlerLottery = () => {
     const PriceCotice = PrecioCotizante.find(
@@ -169,32 +103,71 @@ const Calculator = () => {
         <Box minW={{ base: '90%', md: '468px' }}>
           <Stack
             p="1rem"
-            bg={useColorModeValue('gray.300', 'gray.800')}
+            bg={useColorModeValue('white', 'gray.800')}
             boxShadow="md"
             justifyContent="center"
             borderRadius={20}
             mb={10}
           >
             <form>
-              <FormControl mt={2}>
-                <Center>
-                  <FormLabel htmlFor="account" fontSize={20} fontWeight="bold">
-                    Elegir cuenta
-                  </FormLabel>
-                </Center>
-                <Select
-                  id="account"
-                  placeholder="Seleccionar Cuenta"
-                  {...register('account', { required: true })}
-                  border="2px solid"
-                >
-                  {accounts?.map((account) => (
-                    <option key={account._id} value={account.accountName}>
-                      {account.accountName}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
+              <Box
+                display="flex"
+                flexDir="row"
+                justifyContent="space-between"
+                flexWrap="wrap"
+              >
+                <FormControl mt={2} width={200}>
+                  <Center>
+                    <FormLabel
+                      htmlFor="account"
+                      fontSize={20}
+                      fontWeight="bold"
+                    >
+                      Elegir cuenta
+                    </FormLabel>
+                  </Center>
+                  <Select
+                    id="account"
+                    placeholder="Seleccionar Cuenta"
+                    {...register('account', { required: true })}
+                    borderColor={useColorModeValue('black', 'white')}
+                    textAlign="center"
+                    _hover={{}}
+                  >
+                    {accounts?.map((account) => (
+                      <option key={account._id} value={account.accountName}>
+                        {account.accountName}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl mt={2} width={200}>
+                  <Center>
+                    <FormLabel
+                      htmlFor="accountTotal"
+                      fontSize={20}
+                      fontWeight="bold"
+                    >
+                      CUENTA
+                    </FormLabel>
+                  </Center>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      fontSize="1.2em"
+                      children="$"
+                    />
+                    <Input
+                      id="accountTotal"
+                      {...register('accountTotal', { required: true })}
+                      borderColor={useColorModeValue('black', 'white')}
+                      textAlign="center"
+                      _hover={{}}
+                    />
+                  </InputGroup>
+                </FormControl>
+              </Box>
+
               <FormControl mt={2}>
                 <Center>
                   <FormLabel
@@ -205,13 +178,15 @@ const Calculator = () => {
                     Par de divisas
                   </FormLabel>
                 </Center>
-                <Center flexDirection="row" justifyContent="space-around">
+                <Center flexDirection="row" justifyContent="space-between">
                   <Select
                     id="currencyBase"
                     placeholder="Seleccionar Par"
                     {...register('currencyBase', { required: true })}
-                    border="2px solid"
-                    width="40%"
+                    borderColor={useColorModeValue('black', 'white')}
+                    textAlign="center"
+                    _hover={{}}
+                    width="200px"
                   >
                     {parDivisa.map((divisa) => (
                       <option key={divisa.base} value={divisa.base}>
@@ -223,8 +198,10 @@ const Calculator = () => {
                     id="currencyQuote"
                     placeholder="Seleccionar Par"
                     {...register('currencyQuote', { required: true })}
-                    border="2px solid"
-                    width="40%"
+                    borderColor={useColorModeValue('black', 'white')}
+                    textAlign="center"
+                    _hover={{}}
+                    width="200px"
                   >
                     {cotizante?.map((divisa) => (
                       <option key={divisa} value={divisa}>
@@ -246,7 +223,14 @@ const Calculator = () => {
                     fontSize="1.2em"
                     children="$"
                   />
-                  <Input type="number" id="amount" {...register('amount')} />
+                  <Input
+                    type="number"
+                    id="amount"
+                    {...register('amount')}
+                    borderColor={useColorModeValue('black', 'white')}
+                    textAlign="center"
+                    _hover={{}}
+                  />
                 </InputGroup>
                 {errors.amount && <p>{errors.amount.message}</p>}
               </FormControl>
@@ -261,6 +245,9 @@ const Calculator = () => {
                     type="number"
                     id="stopLoss"
                     {...register('stopLoss')}
+                    borderColor={useColorModeValue('black', 'white')}
+                    textAlign="center"
+                    _hover={{}}
                   />
                 </InputGroup>
               </FormControl>
@@ -280,7 +267,10 @@ const Calculator = () => {
                     type="number"
                     id="risk"
                     {...register('risk')}
+                    borderColor={useColorModeValue('black', 'white')}
+                    textAlign="center"
                     isReadOnly
+                    _hover={{}}
                   />
                 </InputGroup>
               </FormControl>
@@ -294,7 +284,10 @@ const Calculator = () => {
                   type="number"
                   id="lottery"
                   {...register('lottery')}
+                  borderColor={useColorModeValue('black', 'white')}
+                  textAlign="center"
                   isReadOnly
+                  _hover={{}}
                 />
               </FormControl>
             </form>

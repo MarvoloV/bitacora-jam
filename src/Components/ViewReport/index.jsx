@@ -31,7 +31,7 @@ const SignupSchema = yup.object().shape({
   amount: yup.string().required('Ingrese un nombre de Usuario'),
 });
 const ViewReport = () => {
-  const { register, setValue } = useForm({
+  const { register, reset } = useForm({
     resolver: yupResolver(SignupSchema),
   });
   const { id } = useParams();
@@ -48,16 +48,14 @@ const ViewReport = () => {
   }, [token]);
   useEffect(() => {
     onChange(date);
-    setValue('account', `${operation.account}`);
-    setValue('currencyPair', `${operation.currencyPair}`);
-    setValue('amount', `${operation.operationAmount}`);
-    setValue('stopLoss', `${operation.stopLoss}`);
-    setValue('linkEntry', `${operation.linkEntry}`);
-    setValue('typeOfEntry', `${operation.typeOfEntry}`);
-    setValue('risk', `${operation.risk}`);
-    setValue('lottery', `${operation.lottery}`);
+    if (date) {
+      reset({
+        ...operation,
+        amount: operation.operationAmount,
+      });
+    }
     setConfirmationsOperation(operation.confirmationsOperation);
-  }, [date]);
+  }, [operation]);
 
   return (
     <Flex flexDirection="row">
@@ -262,7 +260,7 @@ const ViewReport = () => {
                 <FormControl mt={2} width={220}>
                   <Center>
                     <FormLabel
-                      htmlFor="TakeProfit"
+                      htmlFor="takeProfit"
                       fontSize={20}
                       fontWeight="bold"
                     >
@@ -272,8 +270,8 @@ const ViewReport = () => {
                   <InputGroup>
                     <Input
                       type="text"
-                      id="TakeProfit"
-                      {...register('TakeProfit')}
+                      id="takeProfit"
+                      {...register('takeProfit')}
                       borderColor={useColorModeValue('black', 'white')}
                       isReadOnly
                       textAlign="center"
@@ -298,6 +296,7 @@ const ViewReport = () => {
                       {...register('risk')}
                       borderColor={useColorModeValue('black', 'white')}
                       isReadOnly
+                      textAlign="center"
                     />
                   </InputGroup>
                 </FormControl>
@@ -317,6 +316,7 @@ const ViewReport = () => {
                     {...register('lottery')}
                     borderColor={useColorModeValue('black', 'white')}
                     isReadOnly
+                    textAlign="center"
                   />
                 </FormControl>
               </Box>
