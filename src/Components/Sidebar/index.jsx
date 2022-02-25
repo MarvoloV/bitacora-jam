@@ -1,7 +1,8 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   IconButton,
   Avatar,
@@ -22,14 +23,13 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
-  useColorMode,
-  Button,
+  /* useColorMode,
+  Button, */
 } from '@chakra-ui/react';
 import {
   FiHome,
   FiTrendingUp,
   FiBarChart2,
-  FiStar,
   FiSettings,
   FiMenu,
   FiBell,
@@ -37,6 +37,9 @@ import {
   FiActivity,
 } from 'react-icons/fi';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
+import { logout } from '../../store/actions/authActionsCreator';
+import { fetchUser } from '../../store/actions/userActionsCreator';
 import ButtonDark from '../ButtonDark';
 
 const LinkItems = [
@@ -49,7 +52,13 @@ const LinkItems = [
 
 const SidebarWithHeader = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const token = useSelector((state) => state.auth.token);
+  const userIdFromToken = jwtDecode(token)._id || null;
+  useEffect(() => {
+    dispatch(fetchUser(token, userIdFromToken));
+  }, [token]);
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.200', 'gray.900')}>
       <SidebarContent
@@ -70,7 +79,7 @@ const SidebarWithHeader = ({ children }) => {
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
-      <MobileNav onOpen={onOpen} />
+      <MobileNav onOpen={onOpen} user={user} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         {children}
       </Box>
@@ -141,8 +150,13 @@ const NavItem = ({ icon, source, children, ...rest }) => {
   );
 };
 
-const MobileNav = ({ onOpen, ...rest }) => {
+const MobileNav = ({ onOpen, user }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleClickLogout = () => {
+    dispatch(logout());
+    navigate('/', { replace: true });
+  };
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -153,7 +167,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
       justifyContent={{ base: 'space-between', md: 'flex-end' }}
-      {...rest}
+      /* {...rest} */
     >
       <IconButton
         display={{ base: 'flex', md: 'none' }}
@@ -188,19 +202,16 @@ const MobileNav = ({ onOpen, ...rest }) => {
               _focus={{ boxShadow: 'none' }}
             >
               <HStack>
-                <Avatar
-                  size="sm"
-                  src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                />
+                <Avatar size="sm" src={user.picture} />
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="sm">Justina Clark</Text>
+                  <Text fontSize="sm">{user.username}</Text>
                   <Text fontSize="xs" color="gray.600">
-                    Admin
+                    User
                   </Text>
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
@@ -218,7 +229,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
               <MenuDivider />
-              <MenuItem>Sign out</MenuItem>
+              <MenuItem onClick={() => handleClickLogout()}>Sign out</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
