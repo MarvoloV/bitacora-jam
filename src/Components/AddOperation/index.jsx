@@ -78,7 +78,7 @@ const AddOperation = () => {
     );
     const amount = parseInt(watchShowAmount.amount || 0, 10);
     const SL = parseInt(watchShowAmount.stopLoss, 10) || 0;
-    if (SL) {
+    if (SL && PriceCotice) {
       const valuePip = amount / SL;
       const lotteryAux = valuePip / PriceCotice.costo || 0;
 
@@ -145,15 +145,16 @@ const AddOperation = () => {
         currencyBase,
         currencyQuote,
         currencyPair,
-        operationAmount: amount,
+        operationAmount: parseInt(amount, 10),
         typeOfEntry,
-        stopLoss,
-        takeProfit,
+        stopLoss: parseInt(stopLoss, 10),
+        takeProfit: parseInt(takeProfit, 10),
         confirmationsOperation,
         linkEntry,
         risk,
-        lottery,
+        lottery: parseFloat(lottery, 10),
         riskBenefit,
+        accountId: accountUser._id,
       };
       dispatch(
         sendOperation(newFormAccount, accountUser.operationId, accountUser._id),
@@ -349,7 +350,7 @@ const AddOperation = () => {
                       children="$"
                     />
                     <Input
-                      type="text"
+                      type="number"
                       id="amount"
                       {...register('amount')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -398,7 +399,8 @@ const AddOperation = () => {
                   </Center>
                   <InputGroup>
                     <Input
-                      type="text"
+                      type="number"
+                      step="any"
                       id="stopLoss"
                       {...register('stopLoss')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -419,7 +421,8 @@ const AddOperation = () => {
                   </Center>
                   <InputGroup>
                     <Input
-                      type="text"
+                      type="number"
+                      step="any"
                       id="takeProfit"
                       {...register('takeProfit')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -516,7 +519,8 @@ const AddOperation = () => {
                       children="%"
                     />
                     <Input
-                      type="text"
+                      type="number"
+                      step="any"
                       id="risk"
                       {...register('risk')}
                       borderColor={useColorModeValue('black', 'white')}
@@ -536,7 +540,8 @@ const AddOperation = () => {
                     </FormLabel>
                   </Center>
                   <Input
-                    type="text"
+                    type="number"
+                    step="any"
                     id="lottery"
                     {...register('lottery')}
                     borderColor={useColorModeValue('black', 'white')}

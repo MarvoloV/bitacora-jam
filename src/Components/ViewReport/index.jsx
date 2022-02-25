@@ -55,7 +55,7 @@ const ViewReport = () => {
       });
     }
     setConfirmationsOperation(operation.confirmationsOperation);
-  }, [date]);
+  }, [operation]);
 
   return (
     <Flex flexDirection="row">
