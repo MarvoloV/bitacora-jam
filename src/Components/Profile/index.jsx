@@ -1,5 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable operator-linebreak */
 import {
   Text,
   Heading,
@@ -11,11 +14,27 @@ import {
   Input,
   InputGroup,
   Button,
+  useColorModeValue,
+  useDisclosure,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Modal,
+  ModalHeader,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
+import getCurrentLocalStorage from '../../store/utils/LocalStorageUtils';
+import {
+  fetchUpdateAvatarUser,
+  fetchUpdateUser,
+} from '../../store/actions/userActionsCreator';
 
 const SignupSchema = yup.object().shape({
   /* email: yup.string().email().required('Ingrese un correo electronico'),
@@ -24,21 +43,61 @@ const SignupSchema = yup.object().shape({
   country: yup.string().required('rellene el campo confirmar contraseña'),
   celphone: yup.string(),
 });
+const URL_BASE = process.env.REACT_APP_API_URL_BASE || 'http://localhost:8080';
 const Profile = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({ resolver: yupResolver(SignupSchema) });
-
-  const onSubmit = () => {};
-  /* const onSubmit = (data) => {}; */
+  const user = useSelector((state) => state.user.user);
+  const token = getCurrentLocalStorage('token');
+  const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [size, setSize] = React.useState('md');
+  const [mainImage, setMainImage] = useState(null);
+  const [formAvatar, setFormAvatar] = useState({ image: '' });
+  const defaultPicture =
+    'https://user-images.githubusercontent.com/13368066/151895402-67d28c80-17a8-4a35-8bab-b0be177cbfda.png';
+  const [avatar, setAvatar] = useState(defaultPicture);
+  useEffect(() => {
+    setAvatar(user.picture ?? defaultPicture);
+    reset(user);
+  }, [user]);
+  const handleSizeClick = (newSize) => {
+    setSize(newSize);
+    onOpen();
+  };
+  const onChangeFile = (e) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onloadend = async () => {
+      setMainImage(reader.result);
+    };
+    setFormAvatar(() => ({
+      mainImage: e.target.files[0],
+    }));
+  };
+  const handleChangePicture = async () => {
+    const formDataImageMain = new FormData();
+    formDataImageMain.append('image', formAvatar.mainImage);
+    dispatch(fetchUpdateAvatarUser(formDataImageMain, user._id, token));
+    onClose();
+  };
+  const onSubmit = (data) => {
+    dispatch(fetchUpdateUser(data, user._id, token));
+  };
   return (
     <Box>
-      <Text color="gray.500" fontSize={15} fontWeight="light">
+      <Text
+        color={useColorModeValue('gray.800', 'gray.200')}
+        fontSize={15}
+        fontWeight="light"
+      >
         DESCRIPCION GENERAL
       </Text>
-      <Heading as="h1" color="blue" fontSize={30}>
+      <Heading as="h1" color={useColorModeValue('blue', 'white')} fontSize={30}>
         Perfil de usuario
       </Heading>
       <Box
@@ -46,40 +105,71 @@ const Profile = () => {
         alignItems="center"
         mt={10}
         justifyContent="space-around"
+        flexWrap="wrap"
       >
         <Center
-          bg="red.700"
+          bg={useColorModeValue('white', 'gray.800')}
           width={{
-            base: '100%', // 0-48em
-            md: '100%', // 48em-80em,
+            base: '90%', // 0-48em
+            md: '90%', // 48em-80em,
             lg: '50%', // 80em+
             xl: '35%',
           }}
           height="lg"
           flexDirection="column"
           borderRadius="20px"
+          mb={20}
         >
           <Avatar
-            size="3xl"
-            src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+            size="2xl"
+            src={avatar}
+            alt={user?.username}
+            onClick={() => handleSizeClick('xl')}
           />
           <Heading as="h2" fontSize={40} fontWeight="normal">
-            Justina Clark
+            @ {user.username}
           </Heading>
+          <Modal onClose={onClose} size={size} isOpen={isOpen}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Edita tu imagen de perfil</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Input
+                  type="file"
+                  className="avatarImage"
+                  accept="image/png, .jpeg, .jpg,"
+                  onChange={onChangeFile}
+                />
+                <img src={mainImage} alt="avatarImage" />
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  onClick={handleChangePicture}
+                  style={{
+                    marginTop: 15,
+                    maxWidth: 200,
+                    alignSelf: 'center',
+                  }}
+                >
+                  Cambiar imagen
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </Center>
-
         <Center
           width={{
-            base: '100%', // 0-48em
-            md: '100%', // 48em-80em,
-            lg: '60%', // 80em+
-            xl: '60%',
+            base: '90%', // 0-48em
+            md: '90%', // 48em-80em,
+            lg: '40%', // 80em+
+            xl: '40%',
           }}
           height="lg"
           flexDirection="column"
           borderRadius="20px"
-          border="3px"
-          borderColor="red"
+          bg={useColorModeValue('white', 'gray.800')}
+          mb={20}
         >
           <form onSubmit={handleSubmit(onSubmit)} fontWeight="ligth">
             <FormControl>
@@ -89,27 +179,31 @@ const Profile = () => {
                 </FormLabel>
               </Center>
               <Input
-                value="jorgead0812@gmail.com"
                 type="email"
                 id="email"
-                isDisabled
                 color="red"
                 fontWeight="black"
+                isReadOnly
+                borderColor={useColorModeValue('black', 'white')}
+                {...register('email')}
+                textAlign="center"
               />
             </FormControl>
             <FormControl>
               <Center>
-                <FormLabel htmlFor="userName" fontSize={20} fontWeight="bold">
+                <FormLabel htmlFor="username" fontSize={20} fontWeight="bold">
                   Nombre de usuario
                 </FormLabel>
               </Center>
               <Input
                 type="text"
-                id="userName"
-                value="Marvolov"
-                isDisabled
+                id="username"
+                isReadOnly
                 color="red"
                 fontWeight="black"
+                borderColor={useColorModeValue('black', 'white')}
+                {...register('username')}
+                textAlign="center"
               />
             </FormControl>
             <FormControl>
@@ -119,7 +213,13 @@ const Profile = () => {
                 </FormLabel>
               </Center>
               <InputGroup>
-                <Input type="text" {...register('name')} />
+                <Input
+                  type="text"
+                  {...register('name')}
+                  borderColor={useColorModeValue('black', 'white')}
+                  autoComplete="off"
+                  textAlign="center"
+                />
               </InputGroup>
               {errors.name && <p>{errors.name.message}</p>}
             </FormControl>
@@ -129,16 +229,30 @@ const Profile = () => {
                   Pais
                 </FormLabel>
               </Center>
-              <Input type="text" id="country" {...register('country')} />
+              <Input
+                type="text"
+                id="country"
+                {...register('country')}
+                borderColor={useColorModeValue('black', 'white')}
+                autoComplete="off"
+                textAlign="center"
+              />
               {errors.country && <p>{errors.country.message}</p>}
             </FormControl>
             <FormControl>
               <Center>
-                <FormLabel htmlFor="celphone" fontSize={20} fontWeight="bold">
+                <FormLabel htmlFor="cell" fontSize={20} fontWeight="bold">
                   Celular
                 </FormLabel>
               </Center>
-              <Input type="text" id="celphone" {...register('celphone')} />
+              <Input
+                type="text"
+                id="cell"
+                {...register('cell')}
+                borderColor={useColorModeValue('black', 'white')}
+                autoComplete="off"
+                textAlign="center"
+              />
             </FormControl>
             <Button
               borderRadius={20}
