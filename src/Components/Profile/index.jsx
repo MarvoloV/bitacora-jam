@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable operator-linebreak */
@@ -29,7 +28,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import getCurrentLocalStorage from '../../store/utils/LocalStorageUtils';
 import {
   fetchUpdateAvatarUser,
@@ -37,13 +37,10 @@ import {
 } from '../../store/actions/userActionsCreator';
 
 const SignupSchema = yup.object().shape({
-  /* email: yup.string().email().required('Ingrese un correo electronico'),
-  userName: yup.string().required('Ingrese un nombre de Usuario'), */
-  name: yup.string().required('rellene el campo contraseña'),
-  country: yup.string().required('rellene el campo confirmar contraseña'),
+  name: yup.string().required('rellene el campo del nombre'),
+  country: yup.string().required('rellene el campo contry'),
   celphone: yup.string(),
 });
-const URL_BASE = process.env.REACT_APP_API_URL_BASE || 'http://localhost:8080';
 const Profile = () => {
   const {
     register,
@@ -58,6 +55,7 @@ const Profile = () => {
   const [size, setSize] = React.useState('md');
   const [mainImage, setMainImage] = useState(null);
   const [formAvatar, setFormAvatar] = useState({ image: '' });
+  const MySwal = withReactContent(Swal);
   const defaultPicture =
     'https://user-images.githubusercontent.com/13368066/151895402-67d28c80-17a8-4a35-8bab-b0be177cbfda.png';
   const [avatar, setAvatar] = useState(defaultPicture);
@@ -80,13 +78,39 @@ const Profile = () => {
     }));
   };
   const handleChangePicture = async () => {
-    const formDataImageMain = new FormData();
-    formDataImageMain.append('image', formAvatar.mainImage);
-    dispatch(fetchUpdateAvatarUser(formDataImageMain, user._id, token));
-    onClose();
+    try {
+      const formDataImageMain = new FormData();
+      formDataImageMain.append('image', formAvatar.mainImage);
+      dispatch(fetchUpdateAvatarUser(formDataImageMain, user._id, token));
+      onClose();
+      await MySwal.fire({
+        title: <strong>Buen trabajo!</strong>,
+        html: <i>Foto Actualizada!</i>,
+        icon: 'success',
+      });
+    } catch (error) {
+      await MySwal.fire({
+        title: <strong>Algo ha sucedido</strong>,
+        html: <i>Hay un error con la imagen {error}.</i>,
+        icon: 'error',
+      });
+    }
   };
-  const onSubmit = (data) => {
-    dispatch(fetchUpdateUser(data, user._id, token));
+  const onSubmit = async (data) => {
+    try {
+      dispatch(fetchUpdateUser(data, user._id, token));
+      await MySwal.fire({
+        title: <strong>Buen trabajo!</strong>,
+        html: <i>Perfil Actualizado!</i>,
+        icon: 'success',
+      });
+    } catch (error) {
+      await MySwal.fire({
+        title: <strong>Algo ha sucedido</strong>,
+        html: <i>Hay un error con los datos {error}.</i>,
+        icon: 'error',
+      });
+    }
   };
   return (
     <Box>
