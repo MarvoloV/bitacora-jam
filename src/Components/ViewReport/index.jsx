@@ -458,11 +458,11 @@ const ViewReport = () => {
                       border="1px solid "
                       borderRadius="md"
                       id="linkEntry"
-                      href={operation.linkEntry}
+                      href={operation.linkOutput}
                       isExternal
                       fontSize={20}
                     >
-                      {operation.linkEntry}
+                      {operation.linkOutput}
                     </Link>
                   </Center>
                 </FormControl>

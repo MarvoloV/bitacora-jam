@@ -148,7 +148,7 @@ const Profile = () => {
             size="2xl"
             src={avatar}
             alt={user?.username}
-            onClick={() => handleSizeClick('xl')}
+            onClick={() => handleSizeClick('lg')}
           />
           <Heading as="h2" fontSize={40} fontWeight="normal">
             @ {user.username}
