@@ -115,11 +115,17 @@ const BasicStatistics = () => {
           <StatsCard title="% DE LA CUENTA" stat={percentage} color="cyan" />
         </SimpleGrid>
       </Box>
-      <Box display="flex " mt={100} justifyContent="space-around">
+      <Box
+        display="flex"
+        mt={100}
+        justifyContent="space-around"
+        alignItems="center"
+        flexDirection="column"
+      >
         <Box width={750} bg={useColorModeValue('white', 'gray.800')}>
           <LineChart operationDate={operationMonth} />
         </Box>
-        <Box width={750} bg={useColorModeValue('white', 'gray.800')}>
+        <Box width={750} bg={useColorModeValue('white', 'gray.800')} mt="20">
           <BartChart operationDate={operationMonth} />
         </Box>
       </Box>

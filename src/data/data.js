@@ -87,26 +87,26 @@ export const month = [
     startDate: '2022-03-01',
     endDate: DateTime.fromISO('2022-03-01').endOf('month').toISO(),
   },
-  // {
-  //   date: 'ABRIL',
-  //   startDate: '2022-04-01',
-  //   endDate: DateTime.fromISO('2022-04-01').endOf('month').toISO(),
-  // },
-  // {
-  //   date: 'MAYO',
-  //   startDate: '2022-05-01',
-  //   endDate: DateTime.fromISO('2022-05-01').endOf('month').toISO(),
-  // },
-  // {
-  //   date: 'JUNIO',
-  //   startDate: '2022-06-01',
-  //   endDate: DateTime.fromISO('2022-06-01').endOf('month').toISO(),
-  // },
-  // {
-  //   date: 'JULIO',
-  //   startDate: '2022-07-01',
-  //   endDate: DateTime.fromISO('2022-07-01').endOf('month').toISO(),
-  // },
+  {
+    date: 'ABRIL',
+    startDate: '2022-04-01',
+    endDate: DateTime.fromISO('2022-04-01').endOf('month').toISO(),
+  },
+  {
+    date: 'MAYO',
+    startDate: '2022-05-01',
+    endDate: DateTime.fromISO('2022-05-01').endOf('month').toISO(),
+  },
+  {
+    date: 'JUNIO',
+    startDate: '2022-06-01',
+    endDate: DateTime.fromISO('2022-06-01').endOf('month').toISO(),
+  },
+  {
+    date: 'JULIO',
+    startDate: '2022-07-01',
+    endDate: DateTime.fromISO('2022-07-01').endOf('month').toISO(),
+  },
   // {
   //   date: 'AGOSTO',
   //   startDate: '2022-08-01',
