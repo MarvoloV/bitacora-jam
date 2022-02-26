@@ -22,8 +22,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { AddIcon } from '@chakra-ui/icons';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import { fetchUser } from '../../store/actions/userActionsCreator';
 import { fetchAccounts } from '../../store/actions/accountActions';
+import { fetchDeleteOperation } from '../../store/actions/operationActions';
 
 const TableData = () => {
   const user = useSelector((state) => state.user.user);
@@ -33,6 +36,7 @@ const TableData = () => {
   const userIdFromToken = jwtDecode(token)._id || null;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const MySwal = withReactContent(Swal);
   const handlerSubmit = () => {
     navigate('/pages/createoperation');
   };
@@ -52,6 +56,27 @@ const TableData = () => {
   };
   const HandleEditOperation = (id) => {
     navigate(`/pages/editoperation/${id}`);
+  };
+  const handlerDeleteOpertion = async (id) => {
+    try {
+      dispatch(fetchDeleteOperation(id));
+      await MySwal.fire({
+        title: <strong>Buen trabajo!</strong>,
+        html: <i>Operacion eliminadaa!</i>,
+        icon: 'success',
+      });
+    } catch (error) {
+      await MySwal.fire({
+        title: <strong>Algo ha sucedido</strong>,
+        html: (
+          <i>
+            Hay un error
+            {error}
+          </i>
+        ),
+        icon: 'error',
+      });
+    }
   };
   return (
     <>
@@ -182,6 +207,7 @@ const TableData = () => {
                     icon={<AiFillEdit />}
                   />
                   <IconButton
+                    onClick={() => handlerDeleteOpertion(operationDate._id)}
                     colorScheme="red"
                     variant="outline"
                     icon={<BsFillTrashFill />}
