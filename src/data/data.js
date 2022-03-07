@@ -70,66 +70,66 @@ export const PrecioCotizante = [
 ];
 export const month = [
   {
-    date: 'ENERO',
+    date: 'Enero',
     number: '01',
     startDate: '2022-01-01',
     endDate: DateTime.fromISO('2022-01-01').endOf('month').toISO(),
   },
   {
-    date: 'FEBRERO',
+    date: 'Febrero',
     number: '02',
     startDate: '2022-02-01',
     endDate: DateTime.fromISO('2022-02-01').endOf('month').toISO(),
   },
   {
-    date: 'MARZO',
+    date: 'marzo',
     number: '03',
     startDate: '2022-03-01',
     endDate: DateTime.fromISO('2022-03-01').endOf('month').toISO(),
   },
   {
-    date: 'ABRIL',
+    date: 'Abril',
     startDate: '2022-04-01',
     endDate: DateTime.fromISO('2022-04-01').endOf('month').toISO(),
   },
   {
-    date: 'MAYO',
+    date: 'Mayo',
     startDate: '2022-05-01',
     endDate: DateTime.fromISO('2022-05-01').endOf('month').toISO(),
   },
   {
-    date: 'JUNIO',
+    date: 'Junio',
     startDate: '2022-06-01',
     endDate: DateTime.fromISO('2022-06-01').endOf('month').toISO(),
   },
   {
-    date: 'JULIO',
+    date: 'Julio',
     startDate: '2022-07-01',
     endDate: DateTime.fromISO('2022-07-01').endOf('month').toISO(),
   },
-  // {
-  //   date: 'AGOSTO',
-  //   startDate: '2022-08-01',
-  //   endDate: DateTime.fromISO('2022-08-01').endOf('month').toISO(),
-  // },
-  // {
-  //   date: 'SETIEMBRE',
-  //   startDate: '2022-09-01',
-  //   endDate: DateTime.fromISO('2022-09-01').endOf('month').toISO(),
-  // },
-  // {
-  //   date: 'OCTUBRE',
-  //   startDate: '2022-10-01',
-  //   endDate: DateTime.fromISO('2022-10-01').endOf('month').toISO(),
-  // },
-  // {
-  //   date: 'NOVIEMBRE',
-  //   startDate: '2022-11-01',
-  //   endDate: DateTime.fromISO('2022-11-01').endOf('month').toISO(),
-  // },
-  // {
-  //   date: 'DICIEMBRE',
-  //   startDate: '2022-12-01',
-  //   endDate: DateTime.fromISO('2022-12-01').endOf('month').toISO(),
-  // },
+  {
+    date: 'Agosto',
+    startDate: '2022-08-01',
+    endDate: DateTime.fromISO('2022-08-01').endOf('month').toISO(),
+  },
+  {
+    date: 'Setiembre',
+    startDate: '2022-09-01',
+    endDate: DateTime.fromISO('2022-09-01').endOf('month').toISO(),
+  },
+  {
+    date: 'Octubre',
+    startDate: '2022-10-01',
+    endDate: DateTime.fromISO('2022-10-01').endOf('month').toISO(),
+  },
+  {
+    date: 'Noviembre',
+    startDate: '2022-11-01',
+    endDate: DateTime.fromISO('2022-11-01').endOf('month').toISO(),
+  },
+  {
+    date: 'Diciembre',
+    startDate: '2022-12-01',
+    endDate: DateTime.fromISO('2022-12-01').endOf('month').toISO(),
+  },
 ];

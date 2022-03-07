@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable function-paren-newline */
 /* eslint-disable implicit-arrow-linebreak */
 import { useEffect, useState } from 'react';
@@ -55,22 +56,6 @@ const BasicStatistics = () => {
   const [breakEven, setBreakEven] = useState(0);
   const [percentage, setpercentaje] = useState(100);
 
-  /* operation?.forEach((op) => {
-    const fecha = DateTime.fromISO(op.dateOperation).toLocaleString({
-      month: 'long',
-    });
-    if (fecha === 'Enero') {
-      suma += op.resultMoney;
-      const datos = { fecha, suma };
-      data.push(datos);
-    }
-    console.log(fecha);
-  }); */
-
-  /* console.log(
-    '🚀 ~ file: index.jsx ~ line 55 ~ BasicStatistics ~ dateOperationMonth',
-    dateOperationMonth,
-  ); */
   const calculateStatus = () => {
     const sl = operation.filter((op) => op.tradingResult === 'PERDIDA');
     const tp = operation.filter((op) => op.tradingResult === 'GANADA');
@@ -94,9 +79,9 @@ const BasicStatistics = () => {
     dispatch(cleanedOperationDate());
   }, []);
   useEffect(() => {
-    month.forEach((m) =>
-      dispatch(fetchOperationDate(id, m.startDate, m.endDate)),
-    );
+    month.forEach(async (m) => {
+      dispatch(fetchOperationDate(id, m.startDate, m.endDate));
+    });
   }, [operation.loader]);
   useEffect(() => {
     calculateStatus();
