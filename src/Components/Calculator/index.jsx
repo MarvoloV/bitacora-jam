@@ -34,11 +34,9 @@ const SignupSchema = yup.object().shape({
 const Calculator = () => {
   const {
     register,
-    handleSubmit,
     formState: { errors },
     setValue,
     watch,
-    control,
   } = useForm({ resolver: yupResolver(SignupSchema) });
   const watchShowAmount = watch();
   const dispatch = useDispatch();
@@ -46,7 +44,6 @@ const Calculator = () => {
   const token = useSelector((state) => state.auth.token);
   const userIdFromToken = jwtDecode(token)._id || null;
   const [cotizante, setCotizante] = useState([]);
-  // const [value, onChange] = useState(new Date());
   const accounts = user.accountId;
   useEffect(() => {
     dispatch(fetchUser(token, userIdFromToken));
