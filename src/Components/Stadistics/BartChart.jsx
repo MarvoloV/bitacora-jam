@@ -13,8 +13,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import PropTypes from 'prop-types';
-// import { DateTime } from 'luxon';
-import { month } from '../../data/data';
+import { DateTime } from 'luxon';
 
 ChartJS.register(
   CategoryScale,
@@ -61,12 +60,28 @@ const BartChart = ({ operationDate }) => {
           stopLoss += 1;
         }
       });
-      const prueba = { profit, stopLoss, month: month[aux].date };
-      dateMonth.push(prueba);
-      /* setSum([...sum, suma]);
-      setmonthData([...monthData, month[aux]?.date]); */
+      const auxDateMonth = DateTime.fromISO(
+        operationDate[aux][0]?.dateOperation,
+      )
+        .setLocale('pe')
+        .toFormat('LLLL');
+      const auxNumberMonth = DateTime.fromISO(
+        operationDate[aux][0]?.dateOperation,
+      )
+        .setLocale('pe')
+        .toFormat('L');
+      if (stopLoss || profit) {
+        const prueba = {
+          profit,
+          stopLoss,
+          month: auxDateMonth,
+          num: parseInt(auxNumberMonth, 10),
+        };
+        dateMonth.push(prueba);
+      }
       aux += 1;
     });
+    dateMonth.sort((a, b) => a.num - b.num);
   };
   useEffect(() => {
     if (operationDate.length) {

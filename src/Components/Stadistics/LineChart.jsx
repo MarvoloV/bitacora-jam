@@ -14,7 +14,6 @@ import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
-import { month } from '../../data/data';
 
 ChartJS.register(
   CategoryScale,
@@ -44,35 +43,34 @@ const options = {
 const LineChart = ({ operationDate }) => {
   const dateMonth = [];
   const [dateprueba, setDateprueba] = useState([]);
-  /* console.log(
-    '🚀 ~ file: LineChart.jsx ~ line 49 ~ LineChart ~ dateprueba',
-    dateprueba,
-  ); */
-  // const [sum, setSum] = useState([]);
-  const [monthData, setmonthData] = useState([]);
-  // useEffect(() => {
-  //   setSum([]);
-  //   setmonthData([]);
-  // }, []);
   const calculateMoneyPerMonth = () => {
     let aux = 0;
     operationDate?.forEach((op) => {
       let suma = 0;
       op?.forEach((date) => {
         suma += date.resultMoney;
-        const auxDateMonth = DateTime.fromISO(date.dateOperation).toFormat(
-          'LL',
-        );
-        if (!monthData.includes(auxDateMonth)) {
-          setmonthData(auxDateMonth);
-        }
       });
-      const prueba = { suma, month: month[aux].date };
-      dateMonth.push(prueba);
-      /* setSum([...sum, suma]);
-      setmonthData([...monthData, month[aux]?.date]); */
+      const auxDateMonth = DateTime.fromISO(
+        operationDate[aux][0]?.dateOperation,
+      )
+        .setLocale('pe')
+        .toFormat('LLLL');
+      const auxNumberMonth = DateTime.fromISO(
+        operationDate[aux][0]?.dateOperation,
+      )
+        .setLocale('pe')
+        .toFormat('L');
+      if (suma) {
+        const prueba = {
+          suma,
+          month: auxDateMonth,
+          num: parseInt(auxNumberMonth, 10),
+        };
+        dateMonth.push(prueba);
+      }
       aux += 1;
     });
+    dateMonth.sort((a, b) => a.num - b.num);
   };
   useEffect(() => {
     if (operationDate.length) {
@@ -83,7 +81,7 @@ const LineChart = ({ operationDate }) => {
   const data = {
     datasets: [
       {
-        label: 'Mis datos',
+        label: 'Resultado $',
         data: dateprueba.map((d) => d.suma),
         tension: 0.3,
         borderColor: 'rgb(75, 192, 192)',
