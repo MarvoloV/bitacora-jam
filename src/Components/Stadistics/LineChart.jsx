@@ -71,10 +71,6 @@ const LineChart = ({ operationDate }) => {
       aux += 1;
     });
     dateMonth.sort((a, b) => a.num - b.num);
-    console.log(
-      '🚀 ~ file: LineChart.jsx ~ line 82 ~ calculateMoneyPerMonth ~ dateMonth',
-      dateMonth,
-    );
   };
   useEffect(() => {
     if (operationDate.length) {
