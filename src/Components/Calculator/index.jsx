@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 /* eslint-disable no-unused-vars */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable react/no-children-prop */
@@ -45,7 +46,7 @@ const Calculator = () => {
   const token = useSelector((state) => state.auth.token);
   const userIdFromToken = jwtDecode(token)._id || null;
   const [cotizante, setCotizante] = useState([]);
-  const [value, onChange] = useState(new Date());
+  // const [value, onChange] = useState(new Date());
   const accounts = user.accountId;
   useEffect(() => {
     dispatch(fetchUser(token, userIdFromToken));
@@ -64,11 +65,10 @@ const Calculator = () => {
       (price) => price.cotizante === watchShowAmount.currencyQuote,
     );
     const amount = parseInt(watchShowAmount.amount || 0, 10);
-    const SL = parseInt(watchShowAmount.stopLoss, 10) || 0;
+    const SL = Number(watchShowAmount.stopLoss) || 0;
     if (SL && amount) {
-      const valuePip = amount / SL || 0;
-      const lotteryAux = valuePip / PriceCotice.costo || 0;
-      setValue('lottery', lotteryAux.toFixed(2));
+      const lottery = amount / (SL * PriceCotice.costo + 7);
+      setValue('lottery', lottery.toFixed(2));
     } else {
       setValue('lottery', 0);
     }
@@ -243,6 +243,7 @@ const Calculator = () => {
                 <InputGroup>
                   <Input
                     type="number"
+                    step="any"
                     id="stopLoss"
                     {...register('stopLoss')}
                     borderColor={useColorModeValue('black', 'white')}
